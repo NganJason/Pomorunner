@@ -1,0 +1,10 @@
+{
+  "name": "..",
+  "author": "..",
+  "version": "1.0.1",
+  "manifest_version": 2,
+  "description": "..",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}
