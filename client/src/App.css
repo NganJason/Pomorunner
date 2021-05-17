@@ -1,8 +1,18 @@
 .App {
-  text-align: center;
+  padding: 1%;
+
+  /* Set background image */
+  background-image: url("https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260");
+  background-position: 40%;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  /* To fit the background to whole page without scrolling bars */
+  height: 100%;
+  box-sizing: border-box;
 }
 
-.App-logo {
+/* .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
@@ -35,4 +45,4 @@
   to {
     transform: rotate(360deg);
   }
-}
+} */
