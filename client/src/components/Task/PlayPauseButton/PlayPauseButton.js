@@ -15,11 +15,15 @@ export default function PlayPauseButton(props) {
 
     //Callback when play pause button is pressed
     function playClick() {
-        setStarted(!started);
+        setStarted((prev) => {
+            let newVal = !prev;
 
-        //Clear timer if button was clicked when already started
-        if(started)
-            clearInterval(timerID);
+            //If now stopped, clear interval
+            if(!newVal)
+                clearInterval(timerID);
+
+            return newVal;
+        });
 
         //If progress was 100, then pause was pressed, then reset progress
         if(progress === 100)
