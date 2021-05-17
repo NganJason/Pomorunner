@@ -1,4 +1,4 @@
-import "./Task.scss";
+import "./Task.modules.scss";
 import React from "react";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -19,7 +19,7 @@ export default function Task(props) {
                         <TaskContent content={content} />
                     </Grid>
                     <Grid item xs={1}>
-                        <PlayPauseButton/>
+                        <PlayPauseButton maxTime={5.0}/>
                     </Grid>
                 </Grid>
             </Paper>

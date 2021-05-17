@@ -1,4 +1,4 @@
-import "./TaskContent.scss";
+import "./TaskContent.modules.scss";
 import React from "react";
 import Typography from "@material-ui/core/Typography";
 
