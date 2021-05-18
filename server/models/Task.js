@@ -1,4 +1,7 @@
+import { DEFAULT_POMODORO_DURATION } from "./constant.js";
+
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
 const taskSchema = new Schema(
@@ -13,7 +16,7 @@ const taskSchema = new Schema(
     },
     pomodoro_duration: {
       type: Number,
-      default: 45,
+      default: DEFAULT_POMODORO_DURATION,
     },
     pomodoro_progress: {
       type: Number,

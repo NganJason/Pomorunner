@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+
 const { Schema } = mongoose;
 
-subtaskSchema = new Schema(
+let subtaskSchema = new Schema(
   {
     order: {
       type: Number,

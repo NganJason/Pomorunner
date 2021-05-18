@@ -7,7 +7,7 @@ const findOne = async (model, modelObj) => {
 }
 
 const updateOne = async (model, filter, update) => {
-    return await model.findOneAndUpdate(filter, update)
+    return await model.findOneAndUpdate(filter, update, { new: true });
 }
 
 const deleteOne = async (model, modelObj) => {
