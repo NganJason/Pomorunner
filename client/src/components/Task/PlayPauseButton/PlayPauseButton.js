@@ -11,18 +11,18 @@ export default function PlayPauseButton(props) {
     const [started, setStarted] = React.useState(false);
     const [progress, setProgress] = React.useState(0.0);
     const [timerID, setTimerID] = React.useState(0);
-    const {maxTime} = props;
+    const {maxTimeSeconds} = props;
 
     //Callback when play pause button is pressed
     function playClick() {
-        setStarted((prev) => {
-            let newVal = !prev;
+        setStarted((prevStartStatus) => {
+            let newStartStatus = !prevStartStatus;
 
             //If now stopped, clear interval
-            if(!newVal)
+            if(newStartStatus === false)
                 clearInterval(timerID);
 
-            return newVal;
+            return newStartStatus;
         });
 
         //If progress was 100, then pause was pressed, then reset progress
@@ -36,7 +36,7 @@ export default function PlayPauseButton(props) {
         {
             setTimerID(setInterval(() => {
                 setProgress((prevProgress) => {
-                    let newProgress = prevProgress + 1 / maxTime * 100.0;
+                    let newProgress = prevProgress + 1 / maxTimeSeconds * 100.0;
                     if(newProgress > 100)
                         newProgress = 100;
                     else if(newProgress < 0)
@@ -46,16 +46,18 @@ export default function PlayPauseButton(props) {
                 });
             }, 1000));
         }
-    }, [started, maxTime]);
+    }, [started, maxTimeSeconds]);
 
     //Effect to clear timer when progress is done
     React.useEffect(() => {
         if(progress === 100)
         {
             clearInterval(timerID);
-            setStarted((prev) => {
-                let newVal = !prev;
-                return newVal;
+
+            //Explicit set with callback to prevent dependency on "started" var
+            setStarted((prevStartStatus) => {
+                let newStartStatus = !prevStartStatus;
+                return newStartStatus;
             });
         }
     }, [progress, timerID]);

@@ -19,7 +19,7 @@ export default function Task(props) {
                         <TaskContent content={content} />
                     </Grid>
                     <Grid item xs={1}>
-                        <PlayPauseButton maxTime={5.0}/>
+                        <PlayPauseButton maxTimeSeconds={5.0}/>
                     </Grid>
                 </Grid>
             </Paper>
