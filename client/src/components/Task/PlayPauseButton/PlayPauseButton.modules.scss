@@ -1,0 +1,10 @@
+.play-button{
+    display: block;
+    position: absolute;
+    width: 40px;
+    height: 40px;
+
+    .color-primary{
+        color:rgba($color: rgb(24, 170, 255), $alpha: 1.0);
+    }
+}

@@ -1,0 +1,19 @@
+.main-paper{
+    margin: auto;
+    padding: 1%;
+    align-content: center;
+    width: 30rem;
+    min-height: 50%;
+}
+
+// Override opacity
+.main-paper-root.main-paper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: rgba($color: #fff, $alpha: 0.8);
+}
+
+.add-button{
+    align-self: center;
+}
