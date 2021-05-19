@@ -8,3 +8,7 @@
         color:rgba($color: rgb(24, 170, 255), $alpha: 1.0);
     }
 }
+
+circle.disable-anim{
+    transition-duration: 0s !important;
+}
