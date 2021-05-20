@@ -3,7 +3,7 @@ import { User } from "../models/User.js";
 export class UserRepo {
   constructor() {}
 
-  async createUser() {
+  async createUser(userObj) {
     return await User.create(userObj);
   }
 
@@ -12,7 +12,7 @@ export class UserRepo {
   }
 
   async updateUserByID(auth_id, updateObj) {
-    return await User.findOneAndUpdate({ auth_id }, updateObj);
+    return await User.findOneAndUpdate({ auth_id }, updateObj, {new: true});
   }
 
   async deleteUserByID(auth_id) {
