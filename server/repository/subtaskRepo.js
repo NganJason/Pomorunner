@@ -32,7 +32,6 @@ export class SubtaskRepo {
 
         return subtask
     } catch(err) {
-      console.log(err)
         return err
     }
   }
