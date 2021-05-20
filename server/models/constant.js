@@ -1,0 +1,1 @@
+export const DEFAULT_POMODORO_DURATION = 45
