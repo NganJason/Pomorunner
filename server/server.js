@@ -1,5 +1,6 @@
 import app from "./app.js"
 import config from "./config.js"
+import { dbRepo } from "./repository/dbRepo.js";
 
 import mongoose from "mongoose"
 
@@ -13,6 +14,9 @@ const run = async() => {
             useUnifiedTopology: true,
         });
         console.log("Successfully connected to database")
+
+        global.DBRepo = new dbRepo()
+        console.log("Initialized DB Repo")
 
         app.listen(PORT, err => {
             if(err) {
