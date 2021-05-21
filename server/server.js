@@ -1,6 +1,9 @@
 import app from "./app.js"
 import config from "./config.js"
 import { dbRepo } from "./repository/dbRepo.js";
+import { subtaskRouter } from "./routers/subtaskRouter.js";
+import { taskRouter } from "./routers/taskRouter.js";
+import { userRouter } from "./routers/userRouter.js";
 
 import mongoose from "mongoose"
 
@@ -18,6 +21,11 @@ const run = async() => {
         global.DBRepo = new dbRepo()
         console.log("Initialized DB Repo")
 
+        // Routes
+        app.use("/api/user", userRouter)
+        app.use("/api/task", taskRouter)
+        app.use("/api/subtask", subtaskRouter);
+        
         app.listen(PORT, err => {
             if(err) {
                 throw err;
