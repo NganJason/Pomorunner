@@ -22,7 +22,7 @@ export default function TaskList() {
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
-            if (contents[index].running && timerIDStates.current[index] === 0) {
+            if (index < contents.length && contents[index].running && timerIDStates.current[index] === 0) {
                 timerIDStates.current[index] = setInterval(() => {
                     setContents((prevContents) => {
                         const newContents = ObjArrayCopy(prevContents);
