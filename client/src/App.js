@@ -2,24 +2,25 @@ import './App.css';
 import TaskList from "../src/components/TaskList/TaskList.js";
 
 import axios from "axios";
+import dotenv from "dotenv";
 import GoogleLogin from "react-google-login";
 
+dotenv.config();
+
 const responseGoogle = async (response) => {
-  console.log(response.getBasicProfile())
   const res = await axios({
     method:"POST",
     url: "http://localhost:5000/api/user/login",
-    data: {tokenID: response.tokenID}
+    withCredentials: true,
+    data: {tokenId: response.tokenId}
   })
-
-  console.log(res)
 };
 
 function App() {
   return (
     <div className="App">
       <GoogleLogin
-        clientId="491275267203-eej320jk3agt6bf01ii5pfonbi3seu1h.apps.googleusercontent.com"
+        clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
         buttonText="Login"
         onSuccess={responseGoogle}
         onFailure={responseGoogle}
