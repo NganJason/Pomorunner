@@ -1,19 +1,34 @@
-.task-paper{
-    width: 100%;
-    min-height: 50px;
-    margin: 10px auto;
-    padding-left: 0.1rem;
-    padding-right: 0.1rem;
+.task-paper {
+  width: 100%;
+  margin: 10px auto;
+  padding-left: 0.1rem;
+  padding-right: 0.1rem;
+  position: relative;
 }
 
-.task-container{
-    margin: auto;
-    width: fit-content;
-    padding: 5px;
-    height: 100%;
+.task-container {
+  margin: auto;
+  width: fit-content;
+  padding: 5px;
+  height: 100%;
 }
 
-.task-item{
-    align-content: center;
-    text-align: center;
+.task-item {
+  align-content: center;
+  text-align: center;
+}
+
+.options-div {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+div.text-field-root .text-field-focused .text-field-border {
+  border-color: rgba($color: #000000, $alpha: 0.5);
+}
+
+.editing-disabled {
+  display: none !important;
 }

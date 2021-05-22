@@ -17,8 +17,7 @@ export default function TaskList() {
     const [contents, setContents] = React.useState(contents_start);
     const [dragging, setDragging] = React.useState(false);
 
-    //Tried useState before, but timer would double start on the first start, requireing a hacky fix
-    //Decided to useRef instead
+    //Tried useState before, but timer would double start on the first start, requireing a hacky fix. Found to use useRef instead
     const timerIDStates = React.useRef(contents.map((item) => item.timerID));
 
     React.useEffect(() => {
@@ -43,10 +42,7 @@ export default function TaskList() {
     }, [contents, timerIDStates])
 
     //Handler for drag end
-    const dragEndHandler = React.useCallback((result) => {
-        //Set dragging which disables animation on circular progress and fade in/out of play/pause
-        setDragging(true);
-
+    const dragEndHandler = (result) => {
         //If result is invalid, return
         if (!result.destination || result.destination.index === result.source.index || !result) {
             setDragging(false);
@@ -56,16 +52,9 @@ export default function TaskList() {
         //Swap contents
         setContents((prevContents) => {
             const newContents = ObjArrayCopy(prevContents);
-
             const removedItem = { ...prevContents[result.source.index] };
             newContents.splice(result.source.index, 1);
             newContents.splice(result.destination.index, 0, removedItem);
-
-            //Map or foreach does not work to set timerIDStates.current. Explicit set required
-            timerIDStates.current.forEach((item, index) => {
-                clearInterval(item);
-                timerIDStates.current[index] = 0;
-            });
 
             return newContents;
         });
@@ -74,10 +63,22 @@ export default function TaskList() {
         setTimeout(() => {
             setDragging(false);
         }, 100);
-    }, [timerIDStates]);
+    };
+
+    function dragStartHandler() {
+        //Set dragging which disables animation on circular progress and fade in/out of play/pause
+        setDragging(true);
+
+        //Disable all timers on pickup of any item
+        //Map or foreach does not work to set timerIDStates.current. Explicit set required
+        timerIDStates.current.forEach((item, index) => {
+            clearInterval(item);
+            timerIDStates.current[index] = 0;
+        });
+    }
 
     return (
-        <DragDropContext onDragEnd={dragEndHandler}>
+        <DragDropContext onDragEnd={dragEndHandler} onDragStart={dragStartHandler}>
             <Paper className={"main-paper"} classes={{ root: "main-paper-root" }}>
                 <Droppable droppableId="task-list">
                     {(provided) => {
