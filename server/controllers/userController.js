@@ -45,9 +45,7 @@ const handleDeleteUser = async (req) => {
 
 const handleGetUserTasks = async (req) => {
   const {user_id, datestring} = req.query
-
   let tasks = await DBRepo.task.findUserTasks(user_id, datestring)
-  console.log(tasks)
 
   return tasks
 }
