@@ -26,10 +26,6 @@ const handleLoginUser = async (req) => {
   return {token, email}
 }
 
-const handleLogoutUser = async (req, res) => {
-  res.cookie("token", "", { maxAge: 1 });
-}
-
 const handleCreateUser = async (req) => {
   let user = await DBRepo.user.createUser(req.body)
 
@@ -59,7 +55,6 @@ const handleDeleteUser = async (req) => {
 
 export const userController = {
   handleLoginUser,
-  handleLogoutUser,
   handleGetUser,
   handleCreateUser,
   handleUpdateUser,

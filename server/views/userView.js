@@ -17,7 +17,7 @@ const loginUser = async (req, res, next) => {
 
 const logoutUser = async (req, res, next) => {
     try {
-        userController.handleLogoutUser(req, res)
+        res.cookie("token", "", { maxAge: 1 });
         res.status(200).json({message: "Logged out successfully"})
     } catch (err) {
         next(err)
