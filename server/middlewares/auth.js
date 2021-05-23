@@ -23,10 +23,10 @@ const isAuthenticated = async (req, res, next) => {
 }
 
 const isAuthorized = async (req, res, next) => {
-    const inputUserID = req.body.user_id
+    const inputUserID = req.body.user_id || req.query.user_id
 
     if (inputUserID == undefined) {
-        inputUserID = req.query.user_id;
+        return next(new Error("user_id is not given"))
     }
 
     if (req.user.id == inputUserID) {
