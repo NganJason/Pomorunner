@@ -7,7 +7,6 @@ export class TaskRepo {
   }
 
   async createTask(taskObj) {
-    console.log(taskObj);
     return await Task.create(taskObj);
   }
 
@@ -29,5 +28,9 @@ export class TaskRepo {
     } catch (err) {
       return err;
     }
+  }
+
+  async findUserTasks(user_id, datestring) {
+    return await Task.find({user_id, datestring}).populate("subtasks")
   }
 }

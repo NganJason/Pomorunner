@@ -5,22 +5,22 @@ const handleCreateSubtask = async (req) => {
 };
 
 const handleGetSubtask = async (req) => {
-  const { _id } = req.query;
-  let subtask = await DBRepo.subtask.findSubtaskByID(_id);
+  const { subtask_id } = req.query;
+  let subtask = await DBRepo.subtask.findSubtaskByID(subtask_id);
 
   return subtask;
 };
 
 const handleUpdateSubtask = async (req) => {
-  const { _id, update } = req.body;
-  let subtask = await DBRepo.subtask.updateSubtaskByID(_id, update);
+  const update = req.body;
+  let subtask = await DBRepo.subtask.updateSubtaskByID(update.subtask_id, update);
 
   return subtask;
 };
 
 const handleDeleteSubtask = async (req) => {
-  const { _id } = req.query;
-  let subtask = await DBRepo.subtask.deleteSubtaskByID(_id);
+  const { subtask_id } = req.query;
+  let subtask = await DBRepo.subtask.deleteSubtaskByID(subtask_id);
 
   return subtask;
 };

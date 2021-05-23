@@ -23,45 +23,57 @@ const handleLoginUser = async (req) => {
   }
   
   const token = user.getSignedToken()
-  return {token, email}
+  return {
+    token: token, 
+    user: user
+  }
 }
-
-const handleLogoutUser = async (req, res) => {
-  res.cookie("token", "", { maxAge: 1 });
-}
-
-const handleCreateUser = async (req) => {
-  let user = await DBRepo.user.createUser(req.body)
-
-  return user
-};
-
-const handleGetUser = async (req) => {
-  const { auth_id } = req.query;
-  let user = await DBRepo.user.findUserByID(auth_id);
-
-  return user;
-};
 
 const handleUpdateUser = async (req) => {
-  const {auth_id, update} = req.body
-  let user = await DBRepo.user.updateUserByID(auth_id, update)
+  const {user_id, update} = req.body
+  let user = await DBRepo.user.updateUserByID(user_id, update)
 
   return user
 }
 
 const handleDeleteUser = async (req) => {
-  const { auth_id } = req.query;
-  let user = await DBRepo.user.deleteUserByID(auth_id);
+  const { user_id } = req.query;
+  let user = await DBRepo.user.deleteUserByID(user_id);
 
   return user;
 }
 
+const handleGetUserTasks = async (req) => {
+  const {user_id, datestring} = req.query
+
+  let tasks = await DBRepo.task.findUserTasks(user_id, datestring)
+  console.log(tasks)
+
+  return tasks
+}
+
+const handleGetUser = async (req) => {
+  const { email } = req.query;
+  let user = await DBRepo.user.findUserByEmail(email);
+
+  return user;
+};
+
+const handleGetJWTToken = async (req) => {
+  const {email} = req.query;
+  let user = await DBRepo.user.findUserByEmail(email)
+
+  let token = user.getSignedToken()
+  return {
+    token: token
+  }
+}
+
 export const userController = {
   handleLoginUser,
-  handleLogoutUser,
-  handleGetUser,
-  handleCreateUser,
   handleUpdateUser,
-  handleDeleteUser
+  handleDeleteUser,
+  handleGetUserTasks,
+  handleGetUser,
+  handleGetJWTToken,
 };
