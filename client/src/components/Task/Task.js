@@ -8,6 +8,7 @@ import TaskContent from "./TaskContent/TaskContent.js";
 import Fade from "@material-ui/core/Fade";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
+import DragHandleIcon from '@material-ui/icons/DragHandle';
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 
 const fadeExit = 30;
@@ -17,6 +18,7 @@ export default function Task(props) {
     const { checked } = content;
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [editingContent, setEditingContent] = React.useState(false);
+    const [handleVisible, setHandleVisible] = React.useState(false);
 
     //Toggle checked state
     function onCheckboxChange() {
@@ -63,8 +65,7 @@ export default function Task(props) {
 
     //Disable options menu or editing on dragging
     React.useEffect(() => {
-        if (dragging)
-        {
+        if (dragging) {
             setOptionsVisible(false);
             setEditingContent(false);
         }
@@ -83,21 +84,37 @@ export default function Task(props) {
         setEditingContent(false);
     }
 
+    function onMouseEnter(e) {
+        setHandleVisible(true);
+    }
+
+    function onMouseLeave(e) {
+        setHandleVisible(false);
+    }
+
+    function textFocus(){
+        setEditingContent(true);
+    }
+    
+    function textFocusOut(){
+        setEditingContent(false);
+    }
+
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
-            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu}>
+            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
                 <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container className={"task-container"} alignItems={"center"} id={content}>
+                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={content}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
                         </Grid>
-                        <Grid item xs={10}>
-                            <Fade in={editingContent}>
+                        <Grid item xs={10} className={"text-field-grid-item"}>
+                            <Fade in={true}>
                                 <Grid container
                                     direction="column"
                                     justify="space-between"
                                     spacing={1}
-                                    className={`${editingContent ? "null" : "editing-disabled"}`}
+                                // className={`${editingContent ? "null" : "editing-disabled"}`}
                                 >
                                     <Grid item xs={12}>
                                         <TextField
@@ -106,6 +123,8 @@ export default function Task(props) {
                                             }}
                                             InputProps={{
                                                 classes: {
+                                                    root: "outlined-root",
+                                                    multiline: "outlined-multiline",
                                                     disabled: "text-field-disabled",
                                                     notchedOutline: "text-field-border",
                                                     focused: "text-field-focused"
@@ -120,10 +139,12 @@ export default function Task(props) {
                                             autoComplete={false}
                                             autoCapitalize={false}
                                             onChange={textChange}
+                                            onFocus={textFocus}
+                                            onBlur={textFocusOut}
                                         />
 
                                     </Grid>
-                                    <Grid item>
+                                    <Grid item className={`${editingContent ? null : "editing-disabled"}`}>
                                         <Button
                                             classes={{ root: "done-edit-button" }}
                                             onClick={doneClicked}
@@ -133,11 +154,6 @@ export default function Task(props) {
                                         </Button>
                                     </Grid>
                                 </Grid>
-                            </Fade>
-                            <Fade in={!editingContent} className={`${!editingContent ? "null" : "editing-disabled"}`} timeout={{ exit: fadeExit }}>
-                                <div>
-                                    <TaskContent content={content.content} />
-                                </div>
                             </Fade>
                         </Grid>
                         <Grid item xs={1}>
@@ -164,6 +180,15 @@ export default function Task(props) {
                         </Grid>
                     </Grid>
                 </Fade>
+                <div className="drag-handle-div">
+                    <Fade in={handleVisible}>
+                        <DragHandleIcon
+                            fontSize="small"
+                            color="disabled"
+                            classes={{ root: "drag-handle-root" }}
+                        />
+                    </Fade>
+                </div>
             </Paper>
         </Grid >
     )

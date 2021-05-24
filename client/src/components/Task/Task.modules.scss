@@ -1,6 +1,7 @@
 .task-paper {
   width: 100%;
   margin: 10px auto;
+  padding-top: 0.1rem;
   padding-left: 0.1rem;
   padding-right: 0.1rem;
   position: relative;
@@ -25,10 +26,37 @@
   left: 0;
 }
 
+div.outlined-root.outlined-multiline{
+  border-color: rgba($color: #000000, $alpha: 0.0)!important;
+  border-style: none !important;
+  border-width: 0 !important;
+}
+
+div.text-field-root .text-field-border{
+  border-color: rgba($color: #000000, $alpha: 0.0);
+}
+
 div.text-field-root .text-field-focused .text-field-border {
   border-color: rgba($color: #000000, $alpha: 0.5);
 }
 
+.text-field-grid-item{
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .editing-disabled {
   display: none !important;
+}
+
+.drag-handle-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 1%;
+  height: 0.8rem;
+}
+
+svg.drag-handle-root{
+  transform: scaleX(2);
 }
