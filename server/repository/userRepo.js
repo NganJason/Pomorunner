@@ -7,15 +7,15 @@ export class UserRepo {
     return await User.create(userObj);
   }
 
-  async findUserByID(auth_id) {
-    return await User.findOne({ auth_id });
+  async findUserByEmail(email) {
+    return await User.findOne({ email });
   }
 
-  async updateUserByID(auth_id, updateObj) {
-    return await User.findOneAndUpdate({ auth_id }, updateObj, {new: true});
+  async updateUserByID(_id, updateObj) {
+    return await User.findOneAndUpdate({ _id }, updateObj, { new: true });
   }
 
-  async deleteUserByID(auth_id) {
-    return await User.findOneAndDelete({ auth_id });
+  async deleteUserByID(_id) {
+    return await User.findOneAndDelete({ _id });
   }
 }

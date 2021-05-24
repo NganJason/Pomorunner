@@ -1,3 +1,31 @@
+import {OAuth2Client} from "google-auth-library"
+
+const client = new OAuth2Client(
+  process.env.OAUTH_CLIENT_ID
+);
+
+const handleLoginUser = async (req) => {
+  const {tokenId} = req.body
+
+  const res = await client.verifyIdToken({
+    idToken: tokenId,
+    audience: process.env.OAUTH_CLIENT_ID,
+  });
+  const {email, email_verified} = res.payload
+
+  if (!email_verified) {
+    throw new Error("Invalid token ID")
+  }
+
+  let user = await DBRepo.user.findUserByEmail(email);
+  if (!user) {
+    user = await DBRepo.user.createUser({email})
+  }
+  
+  const token = user.getSignedToken()
+  return {token, email}
+}
+
 const handleCreateUser = async (req) => {
   let user = await DBRepo.user.createUser(req.body)
 
@@ -26,6 +54,7 @@ const handleDeleteUser = async (req) => {
 }
 
 export const userController = {
+  handleLoginUser,
   handleGetUser,
   handleCreateUser,
   handleUpdateUser,
