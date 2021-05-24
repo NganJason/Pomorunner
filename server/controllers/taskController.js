@@ -1,3 +1,5 @@
+import { utils } from "./utils.js";
+
 const handleCreateTask = async (req) => {
   let task = await DBRepo.task.createTask(req.body);
 
@@ -13,9 +15,17 @@ const handleGetTask = async (req) => {
 
 const handleUpdateTask = async (req) => {
   const update = req.body;
-  let task = await DBRepo.task.updateTaskByID(update.task_id, update);
 
-  return task;
+  if (update.order != undefined) {
+    let task = await DBRepo.task.findTaskByID(update.task_id)
+    let reorderedTasks = await utils.getReorderedObjs(task, update.order)
+    
+    DBRepo.task.updateTasksOrder(reorderedTasks)
+  }
+
+  let updatedTask = await DBRepo.task.updateTaskByID(update.task_id, update);
+
+  return updatedTask;
 };
 
 const handleDeleteTask = async (req) => {
@@ -24,6 +34,22 @@ const handleDeleteTask = async (req) => {
 
   return task;
 };
+
+const handleRearrangeTasksOrder = async (task_id, updatedOrder) => {
+  try {
+    let task = await DBRepo.task.findTaskByID(task_id)
+    let initialOrder = task.order
+    
+    let selfAndSiblingTasks = await task.getSelfAndSiblingTasks()
+    selfAndSiblingTasks.sort((a, b) => a.order - b.order);
+
+    let reorderedTasks = common.rearrangeObjOrder(selfAndSiblingTasks, initialOrder - 1, updatedOrder - 1)
+    
+    await DBRepo.task.updateTasksOrder(reorderedTasks)
+  } catch(err) {
+    return err
+  }
+}
 
 export const taskController = {
   handleGetTask,

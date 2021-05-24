@@ -1,3 +1,5 @@
+import {utils} from "./utils.js"
+
 const handleCreateSubtask = async (req) => {
   let subtask = await DBRepo.subtask.createSubtask(req.body);
 
@@ -13,9 +15,17 @@ const handleGetSubtask = async (req) => {
 
 const handleUpdateSubtask = async (req) => {
   const update = req.body;
-  let subtask = await DBRepo.subtask.updateSubtaskByID(update.subtask_id, update);
 
-  return subtask;
+  if (update.order != undefined) {
+    let subtask = await DBRepo.subtask.findSubtaskByID(update.subtask_id)
+    let reorderedSubtasks = await utils.getReorderedObjs(subtask, update.order);
+
+    DBRepo.subtask.updateSubtasksOrder(reorderedSubtasks);
+  }
+
+  let updatedSubtask = await DBRepo.subtask.updateSubtaskByID(update.subtask_id, update);
+
+  return updatedSubtask;
 };
 
 const handleDeleteSubtask = async (req) => {
