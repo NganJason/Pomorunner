@@ -35,22 +35,6 @@ const handleDeleteTask = async (req) => {
   return task;
 };
 
-const handleRearrangeTasksOrder = async (task_id, updatedOrder) => {
-  try {
-    let task = await DBRepo.task.findTaskByID(task_id)
-    let initialOrder = task.order
-    
-    let selfAndSiblingTasks = await task.getSelfAndSiblingTasks()
-    selfAndSiblingTasks.sort((a, b) => a.order - b.order);
-
-    let reorderedTasks = common.rearrangeObjOrder(selfAndSiblingTasks, initialOrder - 1, updatedOrder - 1)
-    
-    await DBRepo.task.updateTasksOrder(reorderedTasks)
-  } catch(err) {
-    return err
-  }
-}
-
 export const taskController = {
   handleGetTask,
   handleCreateTask,
