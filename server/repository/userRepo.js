@@ -11,6 +11,10 @@ export class UserRepo {
     return await User.findOne({ email });
   }
 
+  async findUserByID(_id) {
+    return await User.findOne({ _id });
+  }
+
   async updateUserByID(_id, updateObj) {
     return await User.findOneAndUpdate({ _id }, updateObj, { new: true });
   }
