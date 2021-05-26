@@ -8,5 +8,6 @@ export class TaskObj {
         this.userID = userID;
         this.running = false;
         this.timerID = 0;
+        this.lastEdit = new Date().getSeconds();
     }
 }
