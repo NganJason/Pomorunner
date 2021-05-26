@@ -23,6 +23,7 @@ const handleLoginUser = async (req) => {
   }
   
   const token = user.getSignedToken()
+<<<<<<< HEAD
   return {
     token: token, 
     user: user
@@ -32,6 +33,13 @@ const handleLoginUser = async (req) => {
 const handleUpdateUser = async (req) => {
   const {user_id, update} = req.body
   let user = await DBRepo.user.updateUserByID(user_id, update)
+=======
+  return {token, email}
+}
+
+const handleCreateUser = async (req) => {
+  let user = await DBRepo.user.createUser(req.body)
+>>>>>>> 0bcd50c8c83189feee2551aa1b7fac51b6bde954
 
   return user
 }
@@ -69,6 +77,11 @@ const handleGetJWTToken = async (req) => {
 
 export const userController = {
   handleLoginUser,
+<<<<<<< HEAD
+=======
+  handleGetUser,
+  handleCreateUser,
+>>>>>>> 0bcd50c8c83189feee2551aa1b7fac51b6bde954
   handleUpdateUser,
   handleDeleteUser,
   handleGetUserTasks,
