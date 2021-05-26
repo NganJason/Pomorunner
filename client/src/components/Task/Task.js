@@ -4,7 +4,6 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
-import TaskContent from "./TaskContent/TaskContent.js";
 import Fade from "@material-ui/core/Fade";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
@@ -17,8 +16,9 @@ export default function Task(props) {
     const { index, content, setContents, timerIDStates, provided, dragging } = props;
     const { checked } = content;
     const [optionsVisible, setOptionsVisible] = React.useState(false);
-    const [editingContent, setEditingContent] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
+    const [temporaryContent, setTemporaryContent] = React.useState({content: content.content, lastEdit: new Date().getSeconds()});
+    const shiftHeld = React.useRef(false);
 
     //Toggle checked state
     function onCheckboxChange() {
@@ -45,17 +45,11 @@ export default function Task(props) {
                 });
                 timerIDStates.current = timerIDStates.current.splice(index, 1);
                 setOptionsVisible(false);
-                setEditingContent(false);
                 break;
 
-            case "task-edit":
-                setEditingContent(true);
-                setOptionsVisible(false);
-                break;
 
             case "task-cancel":
                 setOptionsVisible(false);
-                setEditingContent(false);
                 break;
 
             default:
@@ -67,38 +61,51 @@ export default function Task(props) {
     React.useEffect(() => {
         if (dragging) {
             setOptionsVisible(false);
-            setEditingContent(false);
         }
-    }, [dragging])
+    }, [dragging]);
 
-    function textChange(e) {
+    //Effect when main store content is changed
+    React.useEffect(() => {
+        setTemporaryContent({content: content.content, lastEdit: new Date().getSeconds()});
+    }, [content.content])
+
+    const textChange = React.useCallback((e) => {
+        setTemporaryContent({content: e.target.value, lastEdit: new Date().getSeconds()});
+    }, [index, setContents]);
+
+    const onMouseEnter = React.useCallback(() => {
+        setHandleVisible(true);
+    }, []);
+
+    const onMouseLeave = React.useCallback(() => {
+        setHandleVisible(false);
+    }, []);
+
+    //Save temporary content to original store
+    const textFocusOut = React.useCallback(() => {
         setContents(prevContents => {
             const newContents = ObjArrayCopy(prevContents);
-            newContents[index].content = e.target.value;
+            newContents[index].content = temporaryContent.content;
+            newContents[index].lastEdit = new Date().getSeconds();
+
             return newContents;
         })
-    }
+    }, [index, temporaryContent, setContents]);
 
-    function doneClicked(e) {
-        //TODO: Clear this task if it becomes empty
-        setEditingContent(false);
-    }
+    const keyDown = React.useCallback((e) => {
+        if (e.key === "Shift")
+            shiftHeld.current = true;
 
-    function onMouseEnter(e) {
-        setHandleVisible(true);
-    }
+        else if (e.key === "Enter") {
+            if (!shiftHeld.current)
+                document.activeElement.blur();
+        }
+    }, [shiftHeld]);
 
-    function onMouseLeave(e) {
-        setHandleVisible(false);
-    }
-
-    function textFocus(){
-        setEditingContent(true);
-    }
-    
-    function textFocusOut(){
-        setEditingContent(false);
-    }
+    const keyUp = React.useCallback((e) => {
+        if (e.key === "Shift")
+            shiftHeld.current = false;
+    }, [shiftHeld]);
 
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
@@ -114,7 +121,6 @@ export default function Task(props) {
                                     direction="column"
                                     justify="space-between"
                                     spacing={1}
-                                // className={`${editingContent ? "null" : "editing-disabled"}`}
                                 >
                                     <Grid item xs={12}>
                                         <TextField
@@ -135,23 +141,16 @@ export default function Task(props) {
                                             fullWidth={true}
                                             multiline={true}
                                             variant={"outlined"}
-                                            value={content.content}
+                                            value={temporaryContent.lastEdit > content.lastEdit ? temporaryContent.content : content.content}
                                             autoComplete={false}
                                             autoCapitalize={false}
                                             onChange={textChange}
-                                            onFocus={textFocus}
                                             onBlur={textFocusOut}
+                                            onKeyDown={keyDown}
+                                            onKeyUp={keyUp}
+                                            placeholder="Enter new task"
                                         />
 
-                                    </Grid>
-                                    <Grid item className={`${editingContent ? null : "editing-disabled"}`}>
-                                        <Button
-                                            classes={{ root: "done-edit-button" }}
-                                            onClick={doneClicked}
-                                            variant={"outlined"}
-                                        >
-                                            Done
-                                        </Button>
                                     </Grid>
                                 </Grid>
                             </Fade>
@@ -171,9 +170,6 @@ export default function Task(props) {
                     <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
                         <Grid item>
                             <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-edit" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Edit</Button>
                         </Grid>
                         <Grid item>
                             <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>
