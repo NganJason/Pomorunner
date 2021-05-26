@@ -71,7 +71,7 @@ export default function Task(props) {
 
     const textChange = React.useCallback((e) => {
         setTemporaryContent({content: e.target.value, lastEdit: new Date().getSeconds()});
-    }, [index, setContents]);
+    }, []);
 
     const onMouseEnter = React.useCallback(() => {
         setHandleVisible(true);
