@@ -16,4 +16,11 @@
 
 .add-button{
     align-self: center;
+    padding-top: 1rem;
+}
+
+.main-content{
+    max-height: 60vh;
+    overflow: auto;
+    padding: 0 1rem;
 }
