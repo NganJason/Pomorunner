@@ -61,4 +61,13 @@ taskSchema.methods.removeSubtask = async function (subtask_id) {
   return await this.save()
 }
 
+taskSchema.methods.getSelfAndSiblingObjs = async function () {
+  let selfAndSiblingTasks = await this.model("Task").find({
+    user_id: this.user_id,
+    datestring: this.datestring,
+  });
+
+  return selfAndSiblingTasks;
+};
+
 export const Task = mongoose.model("Task", taskSchema);

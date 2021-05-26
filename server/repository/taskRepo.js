@@ -33,4 +33,15 @@ export class TaskRepo {
   async findUserTasks(user_id, datestring) {
     return await Task.find({user_id, datestring}).populate("subtasks")
   }
+
+  async updateTasksOrder(reorderedTasks) {
+    try {
+      reorderedTasks.forEach((task, index) => {
+        task.order = index + 1
+        task.save()
+      })
+    } catch(err) {
+      return err
+    }
+  }
 }
