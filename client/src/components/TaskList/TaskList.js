@@ -10,7 +10,20 @@ import { TaskObj } from "../../classes/TaskObj.js";
 import Task from "../Task/Task.js";
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 
-const contents_start = [new TaskObj("Content 1", 0), new TaskObj("Content 2", 0), new TaskObj("Content 3", 0), new TaskObj("Content 4", 0)];
+const contents_start = [
+  new TaskObj("Content 1", 0),
+  new TaskObj("Content 2", 0),
+  new TaskObj("Content 3", 0),
+  new TaskObj("Content 4", 0),
+  new TaskObj("Content 1", 0),
+  new TaskObj("Content 2", 0),
+  new TaskObj("Content 3", 0),
+  new TaskObj("Content 4", 0),
+  new TaskObj("Content 1", 0),
+  new TaskObj("Content 2", 0),
+  new TaskObj("Content 3", 0),
+  new TaskObj("Content 4", 0),
+];
 
 export default function TaskList() {
     //Set contents from DB as React state
@@ -77,43 +90,52 @@ export default function TaskList() {
     }, [timerIDStates]);
 
     return (
-        <DragDropContext onDragEnd={dragEndHandler}>
-            <Paper className={"main-paper"} classes={{ root: "main-paper-root" }}>
-                <Droppable droppableId="task-list">
-                    {(provided) => {
+      <DragDropContext onDragEnd={dragEndHandler}>
+        <Paper className={"main-paper"} classes={{ root: "main-paper-root" }}>
+          <div>
+            <Typography variant="h6">TaskList</Typography>
+          </div>
+          <div className={"main-content"}>
+            <Droppable droppableId="task-list">
+              {(provided) => {
+                return (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    <Grid container>
+                      {contents.map((content, index) => {
                         return (
-                            <div ref={provided.innerRef} {...provided.droppableProps}>
-                                <Grid container>
-                                    <Grid item>
-                                        <Typography variant="h6">TaskList</Typography>
-                                    </Grid>
-                                    {contents.map((content, index) => {
-                                        return (
-                                            <Draggable key={index} draggableId={`${index}`} index={index}>
-                                                {(provided) => {
-                                                    return <Task
-                                                        index={index}
-                                                        timerIDStates={timerIDStates}
-                                                        setContents={setContents}
-                                                        content={content}
-                                                        provided={provided}
-                                                        dragging={dragging}
-                                                    />
-                                                }}
-                                            </Draggable>
-                                        );
-                                    })}
-                                    {provided.placeholder}
-                                </Grid>
-                            </div>
-                        )
-                    }}
-                </Droppable>
-
-                <div className={"add-button"}>
-                    <Button variant="contained" disableElevation={false}>Add</Button>
-                </div>
-            </Paper>
-        </DragDropContext>
+                          <Draggable
+                            key={index}
+                            draggableId={`${index}`}
+                            index={index}
+                          >
+                            {(provided) => {
+                              return (
+                                <Task
+                                  index={index}
+                                  timerIDStates={timerIDStates}
+                                  setContents={setContents}
+                                  content={content}
+                                  provided={provided}
+                                  dragging={dragging}
+                                />
+                              );
+                            }}
+                          </Draggable>
+                        );
+                      })}
+                      {provided.placeholder}
+                    </Grid>
+                  </div>
+                );
+              }}
+            </Droppable>
+          </div>
+          <div className={"add-button"}>
+            <Button variant="contained" disableElevation={false}>
+              Add
+            </Button>
+          </div>
+        </Paper>
+      </DragDropContext>
     );
 };
