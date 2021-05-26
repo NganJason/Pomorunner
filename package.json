@@ -1,0 +1,23 @@
+{
+  "name": "d-queue",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd frontend && npm run build",
+    "install-client": "cd frontend && npm install",
+    "install-server": "cd backend && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build && npm run install-server",
+    "start": "node backend/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jseow5177/D-Queue.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jseow5177/D-Queue/issues"
+  },
+  "homepage": "https://github.com/jseow5177/D-Queue#readme"
+}
