@@ -7,9 +7,10 @@ const userRouter = express.Router();
 
 userRouter.post("/login", userView.loginUser)
 userRouter.get("/logout", userView.logoutUser);
-userRouter.get("/get", userView.getUser);
-userRouter.post("/create", userView.createUser);
 userRouter.post("/update", auth.isAuthenticated, auth.isAuthorized, userView.updateUser);
 userRouter.get("/delete", auth.isAuthenticated, auth.isAuthorized, userView.deleteUser);
+userRouter.get("/get_tasks", auth.isAuthenticated, auth.isAuthorized, userView.getUserTasks);
+userRouter.get("/get", userView.getUser);
+userRouter.get("/get_jwt_token", userView.getJWTToken)
 
 export { userRouter };

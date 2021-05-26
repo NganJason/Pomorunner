@@ -5,22 +5,22 @@ const handleCreateTask = async (req) => {
 };
 
 const handleGetTask = async (req) => {
-  const { _id } = req.query;
-  let task = await DBRepo.task.findTaskByID(_id);
+  const { task_id } = req.query;
+  let task = await DBRepo.task.findTaskByID(task_id);
 
   return task;
 };
 
 const handleUpdateTask = async (req) => {
-  const { _id, update } = req.body;
-  let task = await DBRepo.task.updateTaskByID(_id, update);
+  const update = req.body;
+  let task = await DBRepo.task.updateTaskByID(update.task_id, update);
 
   return task;
 };
 
 const handleDeleteTask = async (req) => {
-  const { _id } = req.query;
-  let task = await DBRepo.task.deleteTaskByID(_id);
+  const { task_id } = req.query;
+  let task = await DBRepo.task.deleteTaskByID(task_id);
 
   return task;
 };

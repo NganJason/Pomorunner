@@ -26,9 +26,9 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    date: {
-      type: Date,
-      default: Date.now(),
+    datestring: {
+      type: String,
+      default: new Date().toISOString().slice(0, 10),
     },
     user_id: {
       type: Schema.Types.ObjectId,
