@@ -26,9 +26,9 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    date: {
-      type: Date,
-      default: Date.now(),
+    datestring: {
+      type: String,
+      default: new Date().toISOString().slice(0, 10),
     },
     user_id: {
       type: Schema.Types.ObjectId,
@@ -60,5 +60,14 @@ taskSchema.methods.removeSubtask = async function (subtask_id) {
   this.subtasks = filtered_subtasks
   return await this.save()
 }
+
+taskSchema.methods.getSelfAndSiblingObjs = async function () {
+  let selfAndSiblingTasks = await this.model("Task").find({
+    user_id: this.user_id,
+    datestring: this.datestring,
+  });
+
+  return selfAndSiblingTasks;
+};
 
 export const Task = mongoose.model("Task", taskSchema);

@@ -54,7 +54,18 @@ export class SubtaskRepo {
             this.deleteSubtaskByID(subtask_id)
         })
     } catch (err) {
-        return err
+      return err;
+    }
+  }
+
+  async updateSubtasksOrder(reorderedSubtasks) {
+    try {
+      reorderedSubtasks.forEach((subtask, index) => {
+        subtask.order = index + 1;
+        subtask.save();
+      });
+    } catch (err) {
+      return err;
     }
   }
 }

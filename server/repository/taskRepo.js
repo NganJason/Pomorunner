@@ -8,6 +8,7 @@ export class TaskRepo {
   }
 
   async createTask(taskObj) {
+<<<<<<< HEAD
     try {
       let task = await Task.create(taskObj);
 
@@ -15,6 +16,9 @@ export class TaskRepo {
     } catch(err) {
       throw new errorResponse.BadRequestError(err)
     }
+=======
+    return await Task.create(taskObj);
+>>>>>>> 6bfd8f69648f4303e7bc3c161b7ad1506bfed4ba
   }
 
   async findTaskByID(_id) {
@@ -46,6 +50,21 @@ export class TaskRepo {
       return await Task.findOneAndDelete({ _id: task._id });
     } catch (err) {
       throw new errorResponse.BadRequestError(err)
+    }
+  }
+
+  async findUserTasks(user_id, datestring) {
+    return await Task.find({user_id, datestring}).populate("subtasks")
+  }
+
+  async updateTasksOrder(reorderedTasks) {
+    try {
+      reorderedTasks.forEach((task, index) => {
+        task.order = index + 1
+        task.save()
+      })
+    } catch(err) {
+      return err
     }
   }
 }
