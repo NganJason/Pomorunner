@@ -77,11 +77,6 @@ const handleGetJWTToken = async (req) => {
 
 export const userController = {
   handleLoginUser,
-<<<<<<< HEAD
-=======
-  handleGetUser,
-  handleCreateUser,
->>>>>>> 0bcd50c8c83189feee2551aa1b7fac51b6bde954
   handleUpdateUser,
   handleDeleteUser,
   handleGetUserTasks,
