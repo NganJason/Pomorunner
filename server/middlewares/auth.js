@@ -9,16 +9,17 @@ const isAuthenticated = async (req, res, next) => {
         const user = await DBRepo.user.findUserByID(id)
 
         if (!user) {
-            return next(new Error("Invalid user"));
+            return next(new errorResponse.UnauthorizedError(`Invalid user`));
         }
 
         req.user = {
             id,
             email
         }
+
         return next()
     } catch(err) {
-        return next(err);
+        return next(new errorResponse.BadRequestError(err));
     }
 }
 
@@ -26,13 +27,13 @@ const isAuthorized = async (req, res, next) => {
     const inputUserID = req.body.user_id || req.query.user_id
 
     if (inputUserID == undefined) {
-        return next(new Error("user_id is not given"))
+        return next(new errorResponse.BadRequestError(`User id is not given`));
     }
 
     if (req.user.id == inputUserID) {
         return next()
     } else {
-        return next(new Error("Not authorized to query such data"));
+        return next(new errorResponse.UnauthorizedError(`Invalid user`));
     }
 }
 
