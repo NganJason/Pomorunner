@@ -1,23 +1,21 @@
 {
-  "name": "d-queue",
+  "name": "pomorunner",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "cd frontend && npm run build",
-    "install-client": "cd frontend && npm install",
-    "install-server": "cd backend && npm install",
-    "heroku-postbuild": "npm run install-client && npm run build && npm run install-server",
-    "start": "node backend/server.js"
+    "install-server": "cd server && npm install",
+    "heroku-postbuild": "npm run install-server",
+    "start": "node server/server.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jseow5177/D-Queue.git"
+    "url": "https://github.com/NganJason/pomodoro"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jseow5177/D-Queue/issues"
+    "url": "https://github.com/NganJason/pomodoro"
   },
-  "homepage": "https://github.com/jseow5177/D-Queue#readme"
+  "homepage": "https://github.com/NganJason/pomodoro"
 }
