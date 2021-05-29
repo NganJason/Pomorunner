@@ -1,0 +1,21 @@
+{
+  "name": "pomorunner",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd server && npm install",
+    "heroku-postbuild": "npm run install-server",
+    "start": "node server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NganJason/pomodoro"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NganJason/pomodoro"
+  },
+  "homepage": "https://github.com/NganJason/pomodoro"
+}
