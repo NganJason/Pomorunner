@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 
 import { loadGoogleScript, onGoogleScriptLoad } from "../googleAuth.js";
 import { cookiesUtil } from "../cookies.js";
@@ -8,7 +8,7 @@ let devURL = "http://localhost:5000/";
 let liveURL = "https://pomorunner.herokuapp.com/";
 
 export default function Auth({ auth, setAuth }) {
-  const loginHandler = async () => {
+  const loginHandler = useCallback(async () => {
     const googleResponse = await auth.signIn();
 
     const res = await axios({
@@ -19,12 +19,12 @@ export default function Auth({ auth, setAuth }) {
     });
 
     cookiesUtil.setAuthCookies(res.data.token);
-  };
+  }, [auth]);
 
   useEffect(() => {
     window.onGoogleScriptLoad = onGoogleScriptLoad(setAuth);
     loadGoogleScript();
-  }, []);
+  }, [setAuth]);
 
   useEffect(() => {
     if (auth) {
@@ -34,7 +34,7 @@ export default function Auth({ auth, setAuth }) {
         loginHandler();
       }
     }
-  }, [auth]);
+  }, [auth, loginHandler]);
 
   return <></>;
 }
