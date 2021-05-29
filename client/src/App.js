@@ -1,19 +1,28 @@
-import { useState } from "react"
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { useState } from "react";
 
-import './App.css';
+import Auth from "./auth/components/Auth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
+
+import "./App.css";
 import dotenv from "dotenv";
-import Auth from "./auth/components/Auth.js"
+import { store, persistor } from "./redux/store.js";
+
 dotenv.config();
 
 function App() {
   const [auth, setAuth] = useState()
 
   return (
-    <div className="App">
-    <Auth auth={auth} setAuth={setAuth}/>
-      <TaskList />
-    </div>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <div className="App">
+          <Auth auth={auth} setAuth={setAuth} />
+          <TaskList />
+        </div>
+      </PersistGate>
+    </Provider>
   );
 }
 

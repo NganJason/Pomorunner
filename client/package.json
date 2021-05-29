@@ -17,7 +17,12 @@
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",
     "react-scripts": "4.0.3",
+    "redux": "^4.1.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.3.0",
     "sass": "^1.32.13",
+    "thunk": "0.0.1",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^1.1.2"
   },
