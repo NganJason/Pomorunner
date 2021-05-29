@@ -4,6 +4,8 @@ import { dbRepo } from "./repository/dbRepo.js";
 import { subtaskRouter } from "./routers/subtaskRouter.js";
 import { taskRouter } from "./routers/taskRouter.js";
 import { userRouter } from "./routers/userRouter.js";
+import { errorMiddleware } from "./middlewares/errorHandler.js"
+import { errorResponse } from "./utils/error.js"
 
 import mongoose from "mongoose"
 
@@ -18,13 +20,20 @@ const run = async() => {
         });
         console.log("Successfully connected to database")
 
-        global.DBRepo = new dbRepo()
+        global.DBRepo = new dbRepo()    
         console.log("Initialized DB Repo")
 
+        global.errorResponse = errorResponse;
+        console.log("Initialized global objects")
+    
         // Routes
         app.use("/api/user", userRouter)
         app.use("/api/task", taskRouter)
         app.use("/api/subtask", subtaskRouter);
+
+        app.use(errorMiddleware.checkValidRoute)
+        app.use(errorMiddleware.logError)
+        app.use(errorMiddleware.returnError)
         
         app.listen(PORT, err => {
             if(err) {

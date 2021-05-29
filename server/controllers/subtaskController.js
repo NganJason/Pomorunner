@@ -1,3 +1,5 @@
+import {utils} from "./utils.js"
+
 const handleCreateSubtask = async (req) => {
   let subtask = await DBRepo.subtask.createSubtask(req.body);
 
@@ -5,22 +7,30 @@ const handleCreateSubtask = async (req) => {
 };
 
 const handleGetSubtask = async (req) => {
-  const { _id } = req.query;
-  let subtask = await DBRepo.subtask.findSubtaskByID(_id);
+  const { subtask_id } = req.query;
+  let subtask = await DBRepo.subtask.findSubtaskByID(subtask_id);
 
   return subtask;
 };
 
 const handleUpdateSubtask = async (req) => {
-  const { _id, update } = req.body;
-  let subtask = await DBRepo.subtask.updateSubtaskByID(_id, update);
+  const update = req.body;
 
-  return subtask;
+  if (update.order != undefined) {
+    let subtask = await DBRepo.subtask.findSubtaskByID(update.subtask_id)
+    let reorderedSubtasks = await utils.getReorderedObjs(subtask, update.order);
+
+    DBRepo.subtask.updateSubtasksOrder(reorderedSubtasks);
+  }
+
+  let updatedSubtask = await DBRepo.subtask.updateSubtaskByID(update.subtask_id, update);
+
+  return updatedSubtask;
 };
 
 const handleDeleteSubtask = async (req) => {
-  const { _id } = req.query;
-  let subtask = await DBRepo.subtask.deleteSubtaskByID(_id);
+  const { subtask_id } = req.query;
+  let subtask = await DBRepo.subtask.deleteSubtaskByID(subtask_id);
 
   return subtask;
 };
