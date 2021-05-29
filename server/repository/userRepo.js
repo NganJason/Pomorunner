@@ -1,25 +1,56 @@
 import { User } from "../models/User.js";
+import { errorResponse } from "../utils/error.js";
 
 export class UserRepo {
   constructor() {}
 
   async createUser(userObj) {
-    return await User.create(userObj);
+    try {
+      let user = await User.create(userObj);
+
+      return user
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async findUserByEmail(email) {
-    return await User.findOne({ email });
+    try {
+      let user = await User.findOne({ email });
+
+      return user
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async findUserByID(_id) {
-    return await User.findOne({ _id });
+    try {
+      let user = await User.findOne({ _id });
+
+      return user
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async updateUserByID(_id, updateObj) {
-    return await User.findOneAndUpdate({ _id }, updateObj, { new: true });
+    try {
+      let user = await User.findOneAndUpdate({ _id }, updateObj, { new: true });
+
+      return user
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async deleteUserByID(_id) {
-    return await User.findOneAndDelete({ _id });
+    try {
+      let user = await User.findOneAndDelete({ _id });
+
+      return user
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 }
