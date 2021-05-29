@@ -11,16 +11,28 @@ export class SubtaskRepo {
 
         return subtask
     } catch(err) {
-        return err
+        throw new errorResponse.BadRequestError(err)
     }
   }
 
   async findSubtaskByID(_id) {
-    return await Subtask.findOne({ _id });
+    try {
+      let subtask = await Subtask.findOne({ _id });
+
+      return subtask
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async updateSubtaskByID(_id, update) {
-    return await Subtask.findOneAndUpdate({ _id }, update, {new: true});
+    try {
+      let subtask = await Subtask.findOneAndUpdate({ _id }, update, {new: true});
+
+      return subtask
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err);
+    }
   }
 
   async deleteSubtaskByID(subtask_id) {
@@ -32,7 +44,7 @@ export class SubtaskRepo {
 
         return subtask
     } catch(err) {
-        return err
+        throw new errorResponse.BadRequestError(err)
     }
   }
 

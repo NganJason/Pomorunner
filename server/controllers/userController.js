@@ -14,7 +14,7 @@ const handleLoginUser = async (req) => {
   const {email, email_verified} = res.payload
 
   if (!email_verified) {
-    throw new Error("Invalid token ID")
+    throw new errorResponse.BadRequestError("Invalid token ID")
   }
 
   let user = await DBRepo.user.findUserByEmail(email);
@@ -77,11 +77,6 @@ const handleGetJWTToken = async (req) => {
 
 export const userController = {
   handleLoginUser,
-<<<<<<< HEAD
-=======
-  handleGetUser,
-  handleCreateUser,
->>>>>>> 0bcd50c8c83189feee2551aa1b7fac51b6bde954
   handleUpdateUser,
   handleDeleteUser,
   handleGetUserTasks,
