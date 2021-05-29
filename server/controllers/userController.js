@@ -14,7 +14,7 @@ const handleLoginUser = async (req) => {
   const {email, email_verified} = res.payload
 
   if (!email_verified) {
-    throw new Error("Invalid token ID")
+    throw new errorResponse.BadRequestError("Invalid token ID")
   }
 
   let user = await DBRepo.user.findUserByEmail(email);

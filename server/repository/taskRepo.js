@@ -1,5 +1,6 @@
 import { SubtaskRepo } from "./subtaskRepo.js";
 import { Task } from "../models/Task.js";
+import { errorResponse } from "../utils/error.js";
 
 export class TaskRepo {
   constructor() {
@@ -7,15 +8,33 @@ export class TaskRepo {
   }
 
   async createTask(taskObj) {
-    return await Task.create(taskObj);
+    try {
+      let task = await Task.create(taskObj);
+
+      return task
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async findTaskByID(_id) {
-    return await Task.findOne({ _id }).populate("subtasks");
+    try {
+      let task = await Task.findOne({ _id }).populate("subtasks");
+
+      return task
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async updateTaskByID(_id, update) {
-    return await Task.findOneAndUpdate({ _id }, update, { new: true });
+    try {
+      let task = await Task.findOneAndUpdate({ _id }, update, { new: true });
+
+      return task
+    } catch(err) {
+      throw new errorResponse.BadRequestError(err)
+    }
   }
 
   async deleteTaskByID(_id) {
@@ -26,7 +45,7 @@ export class TaskRepo {
 
       return await Task.findOneAndDelete({ _id: task._id });
     } catch (err) {
-      return err;
+      throw new errorResponse.BadRequestError(err)
     }
   }
 
