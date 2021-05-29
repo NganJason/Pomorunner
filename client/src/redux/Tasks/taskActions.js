@@ -1,10 +1,10 @@
 import { store } from "../store";
-import { taskConst } from "./taskConst.js"
+import { taskConst } from "./taskConst.js";
 
 const setTasks = (payload) => {
-    store.dispatch({ type: taskConst.ADD_TASK, payload:payload })
+  store.dispatch({ type: taskConst.SET_TASK, payload: payload });
 };
 
 export const taskActions = {
-    setTasks
-}
+    setTasks,
+};

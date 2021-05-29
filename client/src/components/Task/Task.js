@@ -1,32 +1,35 @@
-import "./Task.modules.scss";
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
+import { useSelector } from "react-redux";
+
+import "./Task.modules.scss";
 import Button from "@material-ui/core/Button";
-import TaskContent from "./TaskContent/TaskContent.js";
+import Checkbox from "@material-ui/core/Checkbox";
+import DragHandleIcon from "@material-ui/icons/DragHandle";
 import Fade from "@material-ui/core/Fade";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
-import DragHandleIcon from '@material-ui/icons/DragHandle';
+
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
 
 const fadeExit = 30;
 
 export default function Task(props) {
-    const { index, content, setContents, timerIDStates, provided, dragging } = props;
-    const { checked } = content;
+    const { index, task, timerIDStates, provided, dragging } = props;
+    const { checked } = task;
+
+    const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [editingContent, setEditingContent] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
 
-    //Toggle checked state
     function onCheckboxChange() {
-        setContents((prevContents) => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents[index].checked = !newContents[index].checked;
-            return newContents;
-        });
+        const newTasks = ObjArrayCopy(tasks)
+
+        newTasks[index].checked = !newTasks[index].checked;
+        taskActions.setTasks(newTasks)
     }
 
     function onContextMenu(e) {
@@ -37,12 +40,10 @@ export default function Task(props) {
     function onOptionsButtonClick(e) {
         switch (e.currentTarget.id) {
             case "task-delete":
-                setContents(prevContents => {
-                    const newContents = ObjArrayCopy(prevContents);
-                    newContents.splice(index, 1);
-                    console.log(newContents);
-                    return newContents;
-                });
+                const newTasks = ObjArrayCopy(tasks)
+                newTasks.splice(index, 1)
+                taskActions.setTasks(newTasks)
+                
                 timerIDStates.current = timerIDStates.current.splice(index, 1);
                 setOptionsVisible(false);
                 setEditingContent(false);
@@ -63,7 +64,6 @@ export default function Task(props) {
         }
     }
 
-    //Disable options menu or editing on dragging
     React.useEffect(() => {
         if (dragging) {
             setOptionsVisible(false);
@@ -72,11 +72,10 @@ export default function Task(props) {
     }, [dragging])
 
     function textChange(e) {
-        setContents(prevContents => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents[index].content = e.target.value;
-            return newContents;
-        })
+        const newTasks = ObjArrayCopy(tasks)
+        newTasks[index].content = e.target.value
+        
+        taskActions.setTasks(newTasks)
     }
 
     function doneClicked(e) {
@@ -104,7 +103,7 @@ export default function Task(props) {
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
             <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
                 <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={content}>
+                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
                         </Grid>
@@ -135,7 +134,7 @@ export default function Task(props) {
                                             fullWidth={true}
                                             multiline={true}
                                             variant={"outlined"}
-                                            value={content.content}
+                                            value={task.content}
                                             autoComplete={false}
                                             autoCapitalize={false}
                                             onChange={textChange}
@@ -158,9 +157,8 @@ export default function Task(props) {
                         </Grid>
                         <Grid item xs={1}>
                             <PlayPauseButton
-                                setContents={setContents}
                                 timerIDStates={timerIDStates}
-                                content={content}
+                                task={task}
                                 index={index}
                                 dragging={dragging}
                             />

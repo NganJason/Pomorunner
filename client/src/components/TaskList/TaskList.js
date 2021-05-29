@@ -1,63 +1,54 @@
-import "./TaskList.modules.scss"
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+import { useSelector } from "react-redux";
+
+import "./TaskList.modules.scss"
 import Button from "@material-ui/core/Button";
-import Typography from "@material-ui/core/Typography";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-
-import { TaskObj } from "../../classes/TaskObj.js";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
-import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 
-const contents_start = [new TaskObj("Content 1", 0), new TaskObj("Content 2", 0), new TaskObj("Content 3", 0), new TaskObj("Content 4", 0)];
+import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
+import { TaskObj } from "../../classes/TaskObj.js";
 
 export default function TaskList() {
-    //Set contents from DB as React state
-    const [contents, setContents] = React.useState(contents_start);
+    const tasks = useSelector((state) => state.tasks);
     const [dragging, setDragging] = React.useState(false);
 
-    //Tried useState before, but timer would double start on the first start, requireing a hacky fix. Found to use useRef instead
-    const timerIDStates = React.useRef(contents.map((item) => item.timerID));
+    const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
-            if (index < contents.length && contents[index].running && timerIDStates.current[index] === 0) {
+            if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
                 timerIDStates.current[index] = setInterval(() => {
-                    setContents((prevContents) => {
-                        const newContents = ObjArrayCopy(prevContents);
+                    const newTasks = ObjArrayCopy(tasks);
 
-                        let newProgress = newContents[index].pomodoro_progress + 1 / newContents[index].pomodoro_duration * 100.0;
-                        if (newProgress > 100)
-                            newProgress = 100;
-                        else if (newProgress < 0)
-                            newProgress = 0;
+                    let newProgress = newTasks[index].pomodoro_progress + 1 / newTasks[index].pomodoro_duration * 100.0;
 
-                        newContents[index].pomodoro_progress = newProgress;
-                        return newContents;
-                    });
+                    if (newProgress > 100) {
+                      newProgress = 100;
+                    } else if (newProgress < 0) { 
+                        newProgress = 0;
+                    }
+
+                    newTasks[index].pomodoro_progress = newProgress;
+
+                    taskActions.setTasks(newTasks)
                 }, 1000);
             }
         })
-    }, [contents, timerIDStates])
+    }, [tasks, timerIDStates])
 
-    //Handler for drag end
     const dragEndHandler = (result) => {
-        //If result is invalid, return
         if (!result.destination || result.destination.index === result.source.index || !result) {
             setDragging(false);
             return;
         }
 
-        //Swap contents
-        setContents((prevContents) => {
-            const newContents = ObjArrayCopy(prevContents);
-            const removedItem = { ...prevContents[result.source.index] };
-            newContents.splice(result.source.index, 1);
-            newContents.splice(result.destination.index, 0, removedItem);
-
-            return newContents;
-        });
+        const newTasks = swapContent(tasks, result.source.index, result.destination.index)
+        taskActions.setTasks(newTasks)
 
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
@@ -66,7 +57,6 @@ export default function TaskList() {
     };
 
     function dragStartHandler() {
-        //Set dragging which disables animation on circular progress and fade in/out of play/pause
         setDragging(true);
 
         //Disable all timers on pickup of any item
@@ -75,6 +65,16 @@ export default function TaskList() {
             clearInterval(item);
             timerIDStates.current[index] = 0;
         });
+    }
+
+    function swapContent(content, source_index, destination_index) {
+      const newContent = ObjArrayCopy(content);
+      const removedItem = { ...content[source_index] };
+
+      newContent.splice(source_index, 1);
+      newContent.splice(destination_index, 0, removedItem);
+
+      return newContent;
     }
 
     return (
@@ -88,15 +88,14 @@ export default function TaskList() {
                                     <Grid item>
                                         <Typography variant="h6">TaskList</Typography>
                                     </Grid>
-                                    {contents.map((content, index) => {
+                                    {tasks.map((task, index) => {
                                         return (
                                             <Draggable key={index} draggableId={`${index}`} index={index}>
                                                 {(provided) => {
                                                     return <Task
                                                         index={index}
                                                         timerIDStates={timerIDStates}
-                                                        setContents={setContents}
-                                                        content={content}
+                                                        task={task}
                                                         provided={provided}
                                                         dragging={dragging}
                                                     />
