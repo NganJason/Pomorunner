@@ -1,7 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import "./PlayPauseButton.modules.scss";
 import Box from "@material-ui/core/Box";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Fade from "@material-ui/core/Fade";
@@ -9,20 +8,25 @@ import IconButton from "@material-ui/core/IconButton";
 import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
+import "./PlayPauseButton.modules.scss";
 import { ObjArrayCopy } from "../../../common/ObjArrayCopy.js";
-import { taskActions } from "../../../redux/Tasks/taskActions.js"
+import { taskActions } from "../../../redux/Tasks/taskActions.js";
 
 export default function PlayPauseButton(props) {
-    const { timerIDStates, index, dragging, task } = props;
+    const { timerIDStates, index, dragging, task} = props;
     const { running, pomodoro_progress } = task;
 
     const tasks = useSelector((state) => state.tasks);
 
+    //Callback when play pause button is pressed
     function playClick() {
+        //Deep copy of array of objects
         const newTasks = ObjArrayCopy(tasks);
-        newTasks[index].running = !newTasks[index].running;
 
-        //Attach timer
+        //Toggle running state
+        newTasks[index].running = !tasks[index].running;
+        
+        //Attach timer if now runnning
         if (newTasks[index].running) {
             //Clear and reset previous timer if there was one
             if (timerIDStates.current[index] !== 0)
@@ -31,15 +35,9 @@ export default function PlayPauseButton(props) {
             //Reset progress if it was previously run
             if (newTasks[index].pomodoro_progress === 100.0)
                 newTasks[index].pomodoro_progress = 0;
-
+            
             timerIDStates.current[index] = setInterval(() => {
-                const newtasks = ObjArrayCopy(tasks);
-                newTasks[index].pomodoro_progress += 1 / newTasks[index].pomodoro_duration * 100.0;
-                if (newTasks[index].pomodoro_progress > 100) {
-                  newTasks[index].pomodoro_progress = 100;
-                }
-
-                taskActions.setTasks(newtasks);
+                taskActions.updatePomodoroProgress(index);
             }, 1000);
         }
 
@@ -49,7 +47,7 @@ export default function PlayPauseButton(props) {
             timerIDStates.current[index] = 0;
         }
 
-        taskActions.setTasks(newTasks)
+        taskActions.setTasks(newTasks);
     }
 
     //Disable and clear timer if progress is full

@@ -3,24 +3,16 @@ import { useSelector } from "react-redux";
 
 import "./TaskList.modules.scss"
 import Button from "@material-ui/core/Button";
-<<<<<<< HEAD
-=======
-import Fade from "@material-ui/core/Fade";
-import Typography from "@material-ui/core/Typography";
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
+import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
 
-<<<<<<< HEAD
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 import { taskActions } from "../../redux/Tasks/taskActions.js"
 import { TaskObj } from "../../classes/TaskObj.js";
-=======
-const contents_start = [new TaskObj("Content 1", 0), new TaskObj("Content 1", 0), new TaskObj("Content 1", 0), new TaskObj("Content 2", 0), new TaskObj("Content 3", 0), new TaskObj("Content 4", 0)];
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
 
 export default function TaskList() {
     const tasks = useSelector((state) => state.tasks);
@@ -30,38 +22,24 @@ export default function TaskList() {
     const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
     function addNewTask() {
-        setContents(prevContents => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents.push(new TaskObj("", 0));
+        const newTasks = ObjArrayCopy(tasks);
+        newTasks.push(new TaskObj("", 0));
 
-            //Delay until after setContent is complete
-            setTimeout(() => {
-                //Scroll to end of task list
-                const elem = document.getElementById("task-list-paper");
-                elem.scrollTop = elem.scrollHeight;
-            }, 0);
+        //Delay until after setContent is complete
+        setTimeout(() => {
+            //Scroll to end of task list
+            const elem = document.getElementById("task-list-paper");
+            elem.scrollTop = elem.scrollHeight;
+        }, 0);
 
-            return newContents;
-        });
+        taskActions.setTasks(newTasks)
     }
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
             if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
                 timerIDStates.current[index] = setInterval(() => {
-                    const newTasks = ObjArrayCopy(tasks);
-
-                    let newProgress = newTasks[index].pomodoro_progress + 1 / newTasks[index].pomodoro_duration * 100.0;
-
-                    if (newProgress > 100) {
-                      newProgress = 100;
-                    } else if (newProgress < 0) { 
-                        newProgress = 0;
-                    }
-
-                    newTasks[index].pomodoro_progress = newProgress;
-
-                    taskActions.setTasks(newTasks)
+                    taskActions.updatePomodoroProgress(index)
                 }, 1000);
             }
         })
@@ -83,25 +61,8 @@ export default function TaskList() {
             return;
         }
 
-<<<<<<< HEAD
         const newTasks = swapContent(tasks, result.source.index, result.destination.index)
         taskActions.setTasks(newTasks)
-=======
-        //Swap contents
-        setContents((prevContents) => {
-            const newContents = ObjArrayCopy(prevContents);
-            const removedItem = { ...prevContents[result.source.index] };
-            newContents.splice(result.source.index, 1);
-
-            //If not marked for deletion
-            if (!toDelete.current)
-                newContents.splice(result.destination.index, 0, removedItem);
-
-            newContents.forEach(item => item.lastEdit = new Date().getSeconds());
-
-            return newContents;
-        });
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
 
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
@@ -109,12 +70,8 @@ export default function TaskList() {
         }, 100);
     };
 
-<<<<<<< HEAD
-    function dragStartHandler() {
-=======
     function dragStartHandler(e) {
         //Set dragging which disables animation on circular progress and fade in/out of play/pause
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
         setDragging(true);
         document.activeElement.blur();
 
@@ -126,16 +83,20 @@ export default function TaskList() {
         });
     }
 
-<<<<<<< HEAD
     function swapContent(content, source_index, destination_index) {
-      const newContent = ObjArrayCopy(content);
-      const removedItem = { ...content[source_index] };
+        const newContent = ObjArrayCopy(content);
+        const removedItem = { ...content[source_index] };
 
-      newContent.splice(source_index, 1);
-      newContent.splice(destination_index, 0, removedItem);
+        newContent.splice(source_index, 1);
 
-      return newContent;
-=======
+      //If not marked for deletion
+        if (!toDelete.current)
+            newContent.splice(destination_index, 0, removedItem);
+
+        newContent.forEach(item => item.lastEdit = new Date().getSeconds());
+        return newContent;
+    }
+    
     function deleteEnter() {
         toDelete.current = true;
         console.log("Entered");
@@ -144,7 +105,6 @@ export default function TaskList() {
     function deleteLeave() {
         toDelete.current = false;
         console.log("Leaved");
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
     }
 
     return (
@@ -156,14 +116,7 @@ export default function TaskList() {
                         return (
                             <Paper ref={provided.innerRef} {...provided.droppableProps} className={"content-div"} id="task-list-paper" classes={{ root: "content-paper" }} elevation={0}>
                                 <Grid container>
-<<<<<<< HEAD
-                                    <Grid item>
-                                        <Typography variant="h6">TaskList</Typography>
-                                    </Grid>
                                     {tasks.map((task, index) => {
-=======
-                                    {contents.map((content, index) => {
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
                                         return (
                                             <Draggable key={index} draggableId={`${index}`} index={index}>
                                                 {(provided) => {

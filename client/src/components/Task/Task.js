@@ -1,19 +1,16 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-import "./Task.modules.scss";
 import Button from "@material-ui/core/Button";
-<<<<<<< HEAD
 import Checkbox from "@material-ui/core/Checkbox";
 import DragHandleIcon from "@material-ui/icons/DragHandle";
-=======
->>>>>>> eedb32c048df607a1312fb5ff8157d210d6f46fa
 import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
 
+import "./Task.modules.scss";
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 import { taskActions } from "../../redux/Tasks/taskActions.js"
 
@@ -26,7 +23,7 @@ export default function Task(props) {
     const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
-    const [temporaryContent, setTemporaryContent] = React.useState({content: content.content, lastEdit: new Date().getSeconds()});
+    const [temporaryTask, setTemporaryTask] = React.useState({content: task.content, lastEdit: new Date().getSeconds()});
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
@@ -70,11 +67,11 @@ export default function Task(props) {
 
     //Effect when main store content is changed
     React.useEffect(() => {
-        setTemporaryContent({content: content.content, lastEdit: new Date().getSeconds()});
-    }, [content.content])
+        setTemporaryTask({content: task.content, lastEdit: new Date().getSeconds()});
+    }, [task.content])
 
     const textChange = React.useCallback((e) => {
-        setTemporaryContent({content: e.target.value, lastEdit: new Date().getSeconds()});
+        setTemporaryTask({content: e.target.value, lastEdit: new Date().getSeconds()});
     }, []);
 
     const onMouseEnter = React.useCallback(() => {
@@ -85,27 +82,14 @@ export default function Task(props) {
         setHandleVisible(false);
     }, []);
 
-    function textChange(e) {
-        const newTasks = ObjArrayCopy(tasks)
-        newTasks[index].content = e.target.value
-        
-        taskActions.setTasks(newTasks)
-    }
-
-    function doneClicked(e) {
-        //TODO: Clear this task if it becomes empty
-        setEditingContent(false);
-    }
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
-        setContents(prevContents => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents[index].content = temporaryContent.content;
-            newContents[index].lastEdit = new Date().getSeconds();
+        const newTasks = ObjArrayCopy(tasks);
+        newTasks[index].content = temporaryTask.content;
+        newTasks[index].lastEdit = new Date().getSeconds();
 
-            return newContents;
-        })
-    }, [index, temporaryContent, setContents]);
+        taskActions.setTasks(newTasks)
+    }, [index, temporaryTask, tasks]);
 
     const keyDown = React.useCallback((e) => {
         if (e.key === "Shift")
@@ -156,7 +140,7 @@ export default function Task(props) {
                                             fullWidth={true}
                                             multiline={true}
                                             variant={"outlined"}
-                                            value={temporaryContent.lastEdit > content.lastEdit ? temporaryContent.content : content.content}
+                                            value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
                                             autoComplete={false}
                                             autoCapitalize={false}
                                             onChange={textChange}
