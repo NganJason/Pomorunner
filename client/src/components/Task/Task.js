@@ -23,7 +23,7 @@ export default function Task(props) {
     const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
-    const [temporaryTask, setTemporaryTask] = React.useState({content: task.content, lastEdit: new Date().getSeconds()});
+    const [temporaryTask, setTemporaryTask] = React.useState({content: task.content, lastEdit: new Date().getTime()});
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
@@ -67,11 +67,11 @@ export default function Task(props) {
 
     //Effect when main store content is changed
     React.useEffect(() => {
-        setTemporaryTask({content: task.content, lastEdit: new Date().getSeconds()});
+        setTemporaryTask({content: task.content, lastEdit: new Date().getTime()});
     }, [task.content])
 
     const textChange = React.useCallback((e) => {
-        setTemporaryTask({content: e.target.value, lastEdit: new Date().getSeconds()});
+        setTemporaryTask({content: e.target.value, lastEdit: new Date().getTime()});
     }, []);
 
     const onMouseEnter = React.useCallback(() => {
@@ -84,9 +84,10 @@ export default function Task(props) {
 
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
+        shiftHeld.current = false;
         const newTasks = ObjArrayCopy(tasks);
         newTasks[index].content = temporaryTask.content;
-        newTasks[index].lastEdit = new Date().getSeconds();
+        newTasks[index].lastEdit = new Date().getTime();
 
         taskActions.setTasks(newTasks)
     }, [index, temporaryTask, tasks]);

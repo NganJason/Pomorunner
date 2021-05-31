@@ -84,6 +84,7 @@ export default function TaskList() {
     }
 
     function swapContent(content, source_index, destination_index) {
+        console.log("Swap content");
         const newContent = ObjArrayCopy(content);
         const removedItem = { ...content[source_index] };
 
@@ -93,7 +94,7 @@ export default function TaskList() {
         if (!toDelete.current)
             newContent.splice(destination_index, 0, removedItem);
 
-        newContent.forEach(item => item.lastEdit = new Date().getSeconds());
+        newContent.forEach(item => item.lastEdit = new Date().getTime());
         return newContent;
     }
     
