@@ -11,6 +11,13 @@ export default function taskReducer(state = inititalState, action) {
             ]
         }
 
+        case taskConst.ADD_TASK: {
+            return [
+                ...state,
+                action.payload
+            ]            
+        }
+
         case taskConst.UPDATE_POMODORO_PROGRESS: {
             const newState = ObjArrayCopy(state)
             const {index} = action.payload
@@ -24,6 +31,14 @@ export default function taskReducer(state = inititalState, action) {
             return [
                 ...newState
             ]
+        }
+
+        case taskConst.SET_RUNNING_STATUS: {
+            const newState = ObjArrayCopy(state);
+            const {index, status} = action.payload;
+            newState[index].running = status;
+
+            return newState;
         }
 
         case taskConst.RESET_TASK: {

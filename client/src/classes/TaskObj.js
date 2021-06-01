@@ -1,3 +1,5 @@
+
+
 export class TaskObj {
     constructor(content, user_id, order){
         this.pomodoro_progress = 0;
@@ -9,6 +11,6 @@ export class TaskObj {
         this.order = order;
         this.running = false;
         this.timerID = 0;
-        this.lastEdit = new Date().getSeconds();
+        this.lastEdit = new Date().getTime();
     }
 }

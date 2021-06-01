@@ -32,15 +32,12 @@ export default function TaskList() {
             elem.scrollTop = elem.scrollHeight;
         }, 0);
         
-
         const res = await getService().localService.task.create(
           new TaskObj("abc", "60a8f15e44c1632e8946b4c8", 0)
         );
 
         const newTask = res.data
-        
-        newTasks.push(newTask);
-        taskActions.setTasks(newTasks)
+        taskActions.addTask(newTask);
     }
 
     React.useEffect(() => {
@@ -92,6 +89,7 @@ export default function TaskList() {
     }
 
     function swapContent(content, source_index, destination_index) {
+        console.log("Swap content");
         const newContent = ObjArrayCopy(content);
         const removedItem = { ...content[source_index] };
 
@@ -101,7 +99,7 @@ export default function TaskList() {
         if (!toDelete.current)
             newContent.splice(destination_index, 0, removedItem);
 
-        newContent.forEach(item => item.lastEdit = new Date().getSeconds());
+        newContent.forEach(item => item.lastEdit = new Date().getTime());
         return newContent;
     }
     
