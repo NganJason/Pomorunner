@@ -5,6 +5,7 @@ import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 
 import taskReducer from "./Tasks/taskReducer.js";
+import userReducer from "./User/userReducer.js";
 
 const persistConfig = {
   key: "root",
@@ -13,6 +14,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   tasks: taskReducer,
+  user: userReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
