@@ -18,19 +18,28 @@ export default function taskReducer(state = inititalState, action) {
             ]            
         }
 
+        case taskConst.RESET_PROGRESS:{
+            const newState = ObjArrayCopy(state)
+            const {index} = action.payload
+            newState[index].pomodoro_progress = 0;
+            newState[index].secondsElapsed = 0;
+
+            return [...newState];
+        }
+
         case taskConst.UPDATE_POMODORO_PROGRESS: {
             const newState = ObjArrayCopy(state)
             const {index} = action.payload
             
             newState[index].pomodoro_progress += 1 / newState[index].pomodoro_duration * 100.0;
+            newState[index].secondsElapsed++;
 
             if (newState[index].pomodoro_progress > 100) {
                 newState[index].pomodoro_progress = 100
+                newState[index].secondsElapsed--;
             }
 
-            return [
-                ...newState
-            ]
+            return [...newState];
         }
 
         case taskConst.SET_RUNNING_STATUS: {
@@ -38,7 +47,16 @@ export default function taskReducer(state = inititalState, action) {
             const {index, status} = action.payload;
             newState[index].running = status;
 
-            return newState;
+            //Stop all other tasks if set to running
+            if(status)
+            {
+                newState.forEach((state, ind) => {
+                    if(ind !== index)
+                        state.running = false;
+                });
+            }
+
+            return [...newState];
         }
 
         case taskConst.RESET_TASK: {

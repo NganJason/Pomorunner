@@ -35,13 +35,15 @@ export default function Task(props) {
 
     function onContextMenu(e) {
         e.preventDefault();
+        document.activeElement.blur();
         setOptionsVisible(prevState => !prevState);
+        setHandleVisible(false);
     }
 
     function onOptionsButtonClick(e) {
+        const newTasks = ObjArrayCopy(tasks)
         switch (e.currentTarget.id) {
             case "task-delete":
-                const newTasks = ObjArrayCopy(tasks)
                 newTasks.splice(index, 1)
                 taskActions.setTasks(newTasks)
                 
@@ -49,6 +51,11 @@ export default function Task(props) {
                 setOptionsVisible(false);
                 break;
 
+            case "task-reset":
+                taskActions.resetProgress(index)
+
+                setOptionsVisible(false);
+                break;
 
             case "task-cancel":
                 setOptionsVisible(false);
@@ -75,8 +82,12 @@ export default function Task(props) {
     }, []);
 
     const onMouseEnter = React.useCallback(() => {
-        setHandleVisible(true);
-    }, []);
+        if(optionsVisible && handleVisible)
+            setHandleVisible(false);
+
+        else if(!optionsVisible && !handleVisible)
+            setHandleVisible(true);
+    }, [optionsVisible, handleVisible]);
 
     const onMouseLeave = React.useCallback(() => {
         setHandleVisible(false);
@@ -109,7 +120,7 @@ export default function Task(props) {
 
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
-            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
                 <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
@@ -129,7 +140,7 @@ export default function Task(props) {
                                             }}
                                             InputProps={{
                                                 classes: {
-                                                    root: "outlined-root",
+                                                    root: "outlined-root task-input-outlined-root",
                                                     multiline: "outlined-multiline",
                                                     disabled: "text-field-disabled",
                                                     notchedOutline: "text-field-border",
@@ -169,6 +180,9 @@ export default function Task(props) {
                     <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
                         <Grid item>
                             <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
+                        </Grid>
+                        <Grid item>
+                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
                         </Grid>
                         <Grid item>
                             <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>

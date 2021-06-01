@@ -13,6 +13,10 @@ const updatePomodoroProgress = (index) => {
   store.dispatch({ type: taskConst.UPDATE_POMODORO_PROGRESS, payload: { index: index } })
 }
 
+const resetProgress = (index) => {
+  store.dispatch({ type: taskConst.RESET_PROGRESS, payload: { index: index } })
+}
+
 const setRunningStatus = (index, status) => {
   store.dispatch({ type: taskConst.SET_RUNNING_STATUS, payload: { index: index, status: status } })
 }
@@ -21,5 +25,6 @@ export const taskActions = {
   setTasks,
   updatePomodoroProgress,
   setRunningStatus,
-  addTask
+  addTask,
+  resetProgress
 };

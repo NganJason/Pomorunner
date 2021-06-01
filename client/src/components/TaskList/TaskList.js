@@ -27,6 +27,10 @@ export default function TaskList() {
             //Scroll to end of task list
             const elem = document.getElementById("task-list-paper");
             elem.scrollTop = elem.scrollHeight;
+
+            //Focus last item
+            const elems = document.getElementsByClassName("task-input-outlined-root");
+            elems[elems.length - 1].firstChild.focus();
         }, 0);
 
         taskActions.addTask(new TaskObj("", 0))
@@ -34,10 +38,21 @@ export default function TaskList() {
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
-            if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
-                timerIDStates.current[index] = setInterval(() => {
-                    taskActions.updatePomodoroProgress(index)
-                }, 1000);
+            if(index < tasks.length)
+            {
+                if (tasks[index].running && tasks[index].progress < 100.0 && timerIDStates.current[index] === 0) {
+                    console.log("Start interval");
+                    timerIDStates.current[index] = setInterval(() => {
+                        taskActions.updatePomodoroProgress(index)
+                    }, 1000);
+                }
+    
+                else if(timerIDStates.current[index] !== 0 && !tasks[index].running)
+                {
+                    console.log("Clear interval");
+                    clearInterval(timerIDStates.current[index]);
+                    timerIDStates.current[index] = 0;
+                }
             }
         })
     }, [tasks, timerIDStates])
@@ -81,13 +96,12 @@ export default function TaskList() {
     }
 
     function swapContent(content, source_index, destination_index) {
-        console.log("Swap content");
         const newContent = ObjArrayCopy(content);
         const removedItem = { ...content[source_index] };
 
         newContent.splice(source_index, 1);
 
-      //If not marked for deletion
+        //If not marked for deletion
         if (!toDelete.current)
             newContent.splice(destination_index, 0, removedItem);
 

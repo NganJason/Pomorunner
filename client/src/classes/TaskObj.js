@@ -1,7 +1,7 @@
 export class TaskObj {
     constructor(content, userID){
         this.pomodoro_progress = 0;
-        this.pomodoro_duration = 10;
+        this.pomodoro_duration = 70;
         this.content = content;
         this.checked = false;
         this.date = new Date();
@@ -9,5 +9,6 @@ export class TaskObj {
         this.running = false;
         this.timerID = 0;
         this.lastEdit = new Date().getTime();
+        this.secondsElapsed = 0;
     }
 }

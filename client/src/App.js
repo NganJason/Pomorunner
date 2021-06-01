@@ -4,8 +4,9 @@ import { useState } from "react";
 
 import Auth from "./auth/components/Auth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
+import Countdown from "../src/components/Countdown/Countdown.js";
 
-import "./App.css";
+import "./App.modules.css";
 import dotenv from "dotenv";
 import { store, persistor } from "./redux/store.js";
 
@@ -19,6 +20,7 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <div className="App">
           <Auth auth={auth} setAuth={setAuth} />
+          <Countdown />
           <TaskList />
         </div>
       </PersistGate>
