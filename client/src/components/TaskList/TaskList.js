@@ -22,9 +22,6 @@ export default function TaskList() {
     const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
     function addNewTask() {
-        const newTasks = ObjArrayCopy(tasks);
-        newTasks.push(new TaskObj("", 0));
-
         //Delay until after setContent is complete
         setTimeout(() => {
             //Scroll to end of task list
@@ -32,7 +29,7 @@ export default function TaskList() {
             elem.scrollTop = elem.scrollHeight;
         }, 0);
 
-        taskActions.setTasks(newTasks)
+        taskActions.addTask(new TaskObj("", 0))
     }
 
     React.useEffect(() => {
