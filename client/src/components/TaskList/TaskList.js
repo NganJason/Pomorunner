@@ -13,6 +13,7 @@ import Task from "../Task/Task.js";
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 import { taskActions } from "../../redux/Tasks/taskActions.js"
 import { TaskObj } from "../../classes/TaskObj.js";
+import { getService } from "../../services/service.js"
 
 export default function TaskList() {
     const tasks = useSelector((state) => state.tasks);
@@ -21,9 +22,8 @@ export default function TaskList() {
 
     const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
-    function addNewTask() {
+    async function addNewTask() {
         const newTasks = ObjArrayCopy(tasks);
-        newTasks.push(new TaskObj("", 0));
 
         //Delay until after setContent is complete
         setTimeout(() => {
@@ -31,7 +31,15 @@ export default function TaskList() {
             const elem = document.getElementById("task-list-paper");
             elem.scrollTop = elem.scrollHeight;
         }, 0);
+        
 
+        const res = await getService().localService.task.create(
+          new TaskObj("abc", "60a8f15e44c1632e8946b4c8", 0)
+        );
+
+        const newTask = res.data
+        
+        newTasks.push(newTask);
         taskActions.setTasks(newTasks)
     }
 

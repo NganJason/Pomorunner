@@ -1,24 +1,22 @@
-import axios from "axios";
 import { useEffect, useCallback } from "react";
 
 import { loadGoogleScript, onGoogleScriptLoad } from "../googleAuth.js";
 import { cookiesUtil } from "../cookies.js";
-
-let devURL = "http://localhost:5000/";
-let liveURL = "https://pomorunner.herokuapp.com/";
+import { getService } from "../../services/service.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
 
 export default function Auth({ auth, setAuth }) {
   const loginHandler = useCallback(async () => {
     const googleResponse = await auth.signIn();
 
-    const res = await axios({
-      method: "POST",
-      url: `${liveURL}api/user/login`,
-      withCredentials: true,
-      data: { tokenId: googleResponse.qc.id_token },
-    });
+    const res = await getService().localService.user.login(googleResponse.qc.id_token)
+    const {_id} = res.data.user
 
     cookiesUtil.setAuthCookies(res.data.token);
+    
+    const task = await getService().localService.user.getTasks(_id);
+    
+    taskActions.setTasks(task.data)
   }, [auth]);
 
   useEffect(() => {
@@ -31,6 +29,7 @@ export default function Auth({ auth, setAuth }) {
       const isSignedIn = auth.isSignedIn.he;
 
       if (!isSignedIn || !cookiesUtil.getAuthCookies()) {
+        console.log("cookies", cookiesUtil.getAuthCookies())
         loginHandler();
       }
     }
