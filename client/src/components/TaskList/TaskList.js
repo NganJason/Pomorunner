@@ -1,67 +1,48 @@
-import "./TaskList.modules.scss"
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+import { useSelector } from "react-redux";
+
+import "./TaskList.modules.scss"
 import Button from "@material-ui/core/Button";
-import Fade from "@material-ui/core/Fade";
-import Typography from "@material-ui/core/Typography";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-
-import { TaskObj } from "../../classes/TaskObj.js";
+import Fade from "@material-ui/core/Fade";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
-import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
 
-const contents_start = [new TaskObj("Content 1", 0), new TaskObj("Content 1", 0), new TaskObj("Content 1", 0), new TaskObj("Content 2", 0), new TaskObj("Content 3", 0), new TaskObj("Content 4", 0)];
+import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
+import { TaskObj } from "../../classes/TaskObj.js";
 
 export default function TaskList() {
-    //Set contents from DB as React state
-    const [contents, setContents] = React.useState(contents_start);
+    const tasks = useSelector((state) => state.tasks);
     const [dragging, setDragging] = React.useState(false);
     const toDelete = React.useRef(false);
 
-    //Tried useState before, but timer would double start on the first start, requireing a hacky fix. Found to use useRef instead
-    const timerIDStates = React.useRef(contents.map((item) => item.timerID));
+    const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
     function addNewTask() {
-        setContents(prevContents => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents.push(new TaskObj("", 0));
+        //Delay until after setContent is complete
+        setTimeout(() => {
+            //Scroll to end of task list
+            const elem = document.getElementById("task-list-paper");
+            elem.scrollTop = elem.scrollHeight;
+        }, 0);
 
-            //Delay until after setContent is complete
-            setTimeout(() => {
-                //Scroll to end of task list
-                const elem = document.getElementById("task-list-paper");
-                elem.scrollTop = elem.scrollHeight;
-            }, 0);
-
-            return newContents;
-        });
+        taskActions.addTask(new TaskObj("", 0))
     }
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
-            if (index < contents.length && contents[index].running && timerIDStates.current[index] === 0) {
+            if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
                 timerIDStates.current[index] = setInterval(() => {
-                    setContents((prevContents) => {
-                        const newContents = ObjArrayCopy(prevContents);
-
-                        let newProgress = newContents[index].pomodoro_progress + 1 / newContents[index].pomodoro_duration * 100.0;
-                        if (newProgress > 100)
-                            newProgress = 100;
-                        else if (newProgress < 0)
-                            newProgress = 0;
-
-                        newContents[index].pomodoro_progress = newProgress;
-                        return newContents;
-                    });
+                    taskActions.updatePomodoroProgress(index)
                 }, 1000);
             }
         })
-    }, [contents, timerIDStates])
+    }, [tasks, timerIDStates])
 
-    //Handler for drag end
     const dragEndHandler = (result) => {
-        //If result is invalid, return
         if (!result.destination || result.destination.index === result.source.index || !result) {
             console.log("Invalid", result, toDelete.current);
             // if (result.source.index !== undefined && toDelete.current) {
@@ -77,20 +58,8 @@ export default function TaskList() {
             return;
         }
 
-        //Swap contents
-        setContents((prevContents) => {
-            const newContents = ObjArrayCopy(prevContents);
-            const removedItem = { ...prevContents[result.source.index] };
-            newContents.splice(result.source.index, 1);
-
-            //If not marked for deletion
-            if (!toDelete.current)
-                newContents.splice(result.destination.index, 0, removedItem);
-
-            newContents.forEach(item => item.lastEdit = new Date().getSeconds());
-
-            return newContents;
-        });
+        const newTasks = swapContent(tasks, result.source.index, result.destination.index)
+        taskActions.setTasks(newTasks)
 
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
@@ -111,6 +80,21 @@ export default function TaskList() {
         });
     }
 
+    function swapContent(content, source_index, destination_index) {
+        console.log("Swap content");
+        const newContent = ObjArrayCopy(content);
+        const removedItem = { ...content[source_index] };
+
+        newContent.splice(source_index, 1);
+
+      //If not marked for deletion
+        if (!toDelete.current)
+            newContent.splice(destination_index, 0, removedItem);
+
+        newContent.forEach(item => item.lastEdit = new Date().getTime());
+        return newContent;
+    }
+    
     function deleteEnter() {
         toDelete.current = true;
         console.log("Entered");
@@ -130,15 +114,14 @@ export default function TaskList() {
                         return (
                             <Paper ref={provided.innerRef} {...provided.droppableProps} className={"content-div"} id="task-list-paper" classes={{ root: "content-paper" }} elevation={0}>
                                 <Grid container>
-                                    {contents.map((content, index) => {
+                                    {tasks.map((task, index) => {
                                         return (
                                             <Draggable key={index} draggableId={`${index}`} index={index}>
                                                 {(provided) => {
                                                     return <Task
                                                         index={index}
                                                         timerIDStates={timerIDStates}
-                                                        setContents={setContents}
-                                                        content={content}
+                                                        task={task}
                                                         provided={provided}
                                                         dragging={dragging}
                                                     />

@@ -1,32 +1,36 @@
-import "./Task.modules.scss";
 import React from "react";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Checkbox from "@material-ui/core/Checkbox";
+import { useSelector } from "react-redux";
+
 import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
+import DragHandleIcon from "@material-ui/icons/DragHandle";
 import Fade from "@material-ui/core/Fade";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
-import DragHandleIcon from '@material-ui/icons/DragHandle';
+
+import "./Task.modules.scss";
 import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
 
 const fadeExit = 30;
 
 export default function Task(props) {
-    const { index, content, setContents, timerIDStates, provided, dragging } = props;
-    const { checked } = content;
+    const { index, task, timerIDStates, provided, dragging } = props;
+    const { checked } = task;
+
+    const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
-    const [temporaryContent, setTemporaryContent] = React.useState({content: content.content, lastEdit: new Date().getSeconds()});
+    const [temporaryTask, setTemporaryTask] = React.useState({content: task.content, lastEdit: new Date().getTime()});
     const shiftHeld = React.useRef(false);
 
-    //Toggle checked state
     function onCheckboxChange() {
-        setContents((prevContents) => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents[index].checked = !newContents[index].checked;
-            return newContents;
-        });
+        const newTasks = ObjArrayCopy(tasks)
+
+        newTasks[index].checked = !newTasks[index].checked;
+        taskActions.setTasks(newTasks)
     }
 
     function onContextMenu(e) {
@@ -37,12 +41,10 @@ export default function Task(props) {
     function onOptionsButtonClick(e) {
         switch (e.currentTarget.id) {
             case "task-delete":
-                setContents(prevContents => {
-                    const newContents = ObjArrayCopy(prevContents);
-                    newContents.splice(index, 1);
-                    console.log(newContents);
-                    return newContents;
-                });
+                const newTasks = ObjArrayCopy(tasks)
+                newTasks.splice(index, 1)
+                taskActions.setTasks(newTasks)
+                
                 timerIDStates.current = timerIDStates.current.splice(index, 1);
                 setOptionsVisible(false);
                 break;
@@ -57,7 +59,6 @@ export default function Task(props) {
         }
     }
 
-    //Disable options menu or editing on dragging
     React.useEffect(() => {
         if (dragging) {
             setOptionsVisible(false);
@@ -66,11 +67,11 @@ export default function Task(props) {
 
     //Effect when main store content is changed
     React.useEffect(() => {
-        setTemporaryContent({content: content.content, lastEdit: new Date().getSeconds()});
-    }, [content.content])
+        setTemporaryTask({content: task.content, lastEdit: new Date().getTime()});
+    }, [task.content])
 
     const textChange = React.useCallback((e) => {
-        setTemporaryContent({content: e.target.value, lastEdit: new Date().getSeconds()});
+        setTemporaryTask({content: e.target.value, lastEdit: new Date().getTime()});
     }, []);
 
     const onMouseEnter = React.useCallback(() => {
@@ -83,14 +84,13 @@ export default function Task(props) {
 
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
-        setContents(prevContents => {
-            const newContents = ObjArrayCopy(prevContents);
-            newContents[index].content = temporaryContent.content;
-            newContents[index].lastEdit = new Date().getSeconds();
+        shiftHeld.current = false;
+        const newTasks = ObjArrayCopy(tasks);
+        newTasks[index].content = temporaryTask.content;
+        newTasks[index].lastEdit = new Date().getTime();
 
-            return newContents;
-        })
-    }, [index, temporaryContent, setContents]);
+        taskActions.setTasks(newTasks)
+    }, [index, temporaryTask, tasks]);
 
     const keyDown = React.useCallback((e) => {
         if (e.key === "Shift")
@@ -111,7 +111,7 @@ export default function Task(props) {
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
             <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
                 <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={content}>
+                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
                         </Grid>
@@ -141,7 +141,7 @@ export default function Task(props) {
                                             fullWidth={true}
                                             multiline={true}
                                             variant={"outlined"}
-                                            value={temporaryContent.lastEdit > content.lastEdit ? temporaryContent.content : content.content}
+                                            value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
                                             autoComplete={false}
                                             autoCapitalize={false}
                                             onChange={textChange}
@@ -157,9 +157,8 @@ export default function Task(props) {
                         </Grid>
                         <Grid item xs={1}>
                             <PlayPauseButton
-                                setContents={setContents}
                                 timerIDStates={timerIDStates}
-                                content={content}
+                                task={task}
                                 index={index}
                                 dragging={dragging}
                             />
