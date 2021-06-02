@@ -1,0 +1,61 @@
+.main-paper {
+  margin: auto;
+  padding: 2%;
+  padding-bottom: 0;
+  align-content: center;
+  width: 87%;
+  overflow-y: hide;
+  position: relative;
+}
+
+.content-div.content-paper{
+  height: 28rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 5px;
+  background-color: rgba($color: #fff, $alpha: 0.0);
+}
+
+// Override opacity
+.main-paper-root.main-paper {
+  background-color: rgba($color: #fff, $alpha: 0.8);
+}
+
+.content-div::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.content-div::-webkit-scrollbar-track {
+  border-style: solid;
+  border-width: 0.5rem;
+  border-color: rgba($color: #000000, $alpha: 0.2);
+  border-top-right-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.content-div::-webkit-scrollbar-thumb {
+  background-clip: padding-box;
+  border-color: rgba($color: #000000, $alpha: 0.7);
+  border-style: solid;
+  border-width: 0.5rem;
+  border-radius: inherit;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+button.add-button-root {
+  margin: 1rem;
+  // align-self: center;
+}
+
+button.delete-button-root{
+  margin: 1rem;
+  position: absolute;
+}

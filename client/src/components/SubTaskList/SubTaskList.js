@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import { TaskObj } from "../../classes/TaskObj.js";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import Task from "../Task/Task.js";
+import SubTask from "../SubTask/SubTask.js";
 
 import { useSelector } from "react-redux";
 import { taskActions } from "../../redux/Tasks/taskActions.js";
@@ -38,7 +38,7 @@ export default function SubTaskList(props) {
     return (
         <>
             <DragDropContext onDragEnd={dragEndHandler} onDragStart={dragStartHandler}>
-                <Fade in={subtasksIndex === 1}>
+                <Fade in={subtasksIndex !== -1}>
                     <Paper className={"main-paper"} classes={{ root: "main-paper-root" }} elevation={0}>
                         <Grid container alignItems="center">
                             <Grid item xs={11}>
@@ -60,7 +60,7 @@ export default function SubTaskList(props) {
                                                 return (
                                                     <Draggable key={index} draggableId={`${index}`} index={index}>
                                                         {(provided) => {
-                                                            return <Task
+                                                            return <SubTask
                                                                 index={index}
                                                                 // timerIDStates={timerIDStates}
                                                                 task={task}
