@@ -20,6 +20,7 @@
     "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",
+    "redux-state-sync": "^3.1.2",
     "redux-thunk": "^2.3.0",
     "sass": "^1.32.13",
     "thunk": "0.0.1",
