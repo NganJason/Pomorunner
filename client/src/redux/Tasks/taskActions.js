@@ -21,10 +21,15 @@ const setRunningStatus = (index, status) => {
   store.dispatch({ type: taskConst.SET_RUNNING_STATUS, payload: { index: index, status: status } })
 }
 
+const setSubtasksVisibility = (index, status) => {
+  store.dispatch({ type: taskConst.SET_SUBTASKS_VISIBILITY, payload: { index: index, subtasksVisibility: status } })
+}
+
 export const taskActions = {
   setTasks,
   updatePomodoroProgress,
   setRunningStatus,
   addTask,
-  resetProgress
+  resetProgress,
+  setSubtasksVisibility,
 };

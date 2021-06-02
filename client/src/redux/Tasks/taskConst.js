@@ -4,4 +4,5 @@ export const taskConst = {
   UPDATE_POMODORO_PROGRESS : "update_pomodoro_progress",
   SET_RUNNING_STATUS: "set_running_status",
   RESET_PROGRESS: "reset_progress",
+  SET_SUBTASKS_VISIBILITY: "set_subtasks_visibility",
 };

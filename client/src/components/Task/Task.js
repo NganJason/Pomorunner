@@ -18,12 +18,12 @@ const fadeExit = 30;
 
 export default function Task(props) {
     const { index, task, timerIDStates, provided, dragging } = props;
-    const { checked } = task;
+    const { checked, subtasksVisible } = task;
 
     const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
-    const [temporaryTask, setTemporaryTask] = React.useState({content: task.content, lastEdit: new Date().getTime()});
+    const [temporaryTask, setTemporaryTask] = React.useState({ content: task.content, lastEdit: new Date().getTime() });
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
@@ -36,6 +36,9 @@ export default function Task(props) {
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
+        if(subtasksVisible) 
+            return;
+
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
     }
@@ -46,7 +49,7 @@ export default function Task(props) {
             case "task-delete":
                 newTasks.splice(index, 1)
                 taskActions.setTasks(newTasks)
-                
+
                 timerIDStates.current = timerIDStates.current.splice(index, 1);
                 setOptionsVisible(false);
                 break;
@@ -58,6 +61,11 @@ export default function Task(props) {
                 break;
 
             case "task-cancel":
+                setOptionsVisible(false);
+                break;
+
+            case "task-subtasks":
+                taskActions.setSubtasksVisibility(index, true);
                 setOptionsVisible(false);
                 break;
 
@@ -74,18 +82,18 @@ export default function Task(props) {
 
     //Effect when main store content is changed
     React.useEffect(() => {
-        setTemporaryTask({content: task.content, lastEdit: new Date().getTime()});
+        setTemporaryTask({ content: task.content, lastEdit: new Date().getTime() });
     }, [task.content])
 
     const textChange = React.useCallback((e) => {
-        setTemporaryTask({content: e.target.value, lastEdit: new Date().getTime()});
+        setTemporaryTask({ content: e.target.value, lastEdit: new Date().getTime() });
     }, []);
 
     const onMouseEnter = React.useCallback(() => {
-        if(optionsVisible && handleVisible)
+        if (optionsVisible && handleVisible)
             setHandleVisible(false);
 
-        else if(!optionsVisible && !handleVisible)
+        else if (!optionsVisible && !handleVisible)
             setHandleVisible(true);
     }, [optionsVisible, handleVisible]);
 
@@ -121,50 +129,48 @@ export default function Task(props) {
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
             <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
-                <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
+                <Fade in={!optionsVisible && !subtasksVisible} timeout={{ exit: fadeExit }}>
                     <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
                         </Grid>
                         <Grid item xs={10} className={"text-field-grid-item"}>
-                            <Fade in={true}>
-                                <Grid container
-                                    direction="column"
-                                    justify="space-between"
-                                    spacing={1}
-                                >
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            classes={{
-                                                root: "text-field-root"
-                                            }}
-                                            InputProps={{
-                                                classes: {
-                                                    root: "outlined-root task-input-outlined-root",
-                                                    multiline: "outlined-multiline",
-                                                    disabled: "text-field-disabled",
-                                                    notchedOutline: "text-field-border",
-                                                    focused: "text-field-focused"
-                                                }
-                                            }}
-                                            size="small"
-                                            margin="none"
-                                            fullWidth={true}
-                                            multiline={true}
-                                            variant={"outlined"}
-                                            value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
-                                            autoComplete={false}
-                                            autoCapitalize={false}
-                                            onChange={textChange}
-                                            onBlur={textFocusOut}
-                                            onKeyDown={keyDown}
-                                            onKeyUp={keyUp}
-                                            placeholder="Enter new task"
-                                        />
+                            <Grid container
+                                direction="column"
+                                justify="space-between"
+                                spacing={1}
+                            >
+                                <Grid item xs={12}>
+                                    <TextField
+                                        classes={{
+                                            root: "text-field-root"
+                                        }}
+                                        InputProps={{
+                                            classes: {
+                                                root: "outlined-root task-input-outlined-root",
+                                                multiline: "outlined-multiline",
+                                                disabled: "text-field-disabled",
+                                                notchedOutline: "text-field-border",
+                                                focused: "text-field-focused"
+                                            }
+                                        }}
+                                        size="small"
+                                        margin="none"
+                                        fullWidth={true}
+                                        multiline={true}
+                                        variant={"outlined"}
+                                        value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
+                                        autoComplete="false"
+                                        autoCapitalize="false"
+                                        onChange={textChange}
+                                        onBlur={textFocusOut}
+                                        onKeyDown={keyDown}
+                                        onKeyUp={keyUp}
+                                        placeholder="Enter new task"
+                                    />
 
-                                    </Grid>
                                 </Grid>
-                            </Fade>
+                            </Grid>
                         </Grid>
                         <Grid item xs={1}>
                             <PlayPauseButton
@@ -179,15 +185,23 @@ export default function Task(props) {
                 <Fade in={optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
                         <Grid item>
-                            <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
+                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
                         </Grid>
                         <Grid item>
-                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
+                            <Button id="task-subtasks" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Subtasks</Button>
+                        </Grid>
+                        <Grid item>
+                            <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
                         </Grid>
                         <Grid item>
                             <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>
                         </Grid>
                     </Grid>
+                </Fade>
+                <Fade in={subtasksVisible} timeout={{ exit: fadeExit }}>
+                    <div className={"subtasks-indicator"}>
+                        <p> =======) Subtasks visible</p>
+                    </div>
                 </Fade>
                 <div className="drag-handle-div">
                     <Fade in={handleVisible}>

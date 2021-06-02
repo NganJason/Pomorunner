@@ -9,26 +9,25 @@ export default function Countdown(props) {
     const tasks = useSelector((state) => state.tasks);
 
     let countdownVal = -1, progressVal = -5, countdownMins = 0, countdownSecs = 0;
-    tasks.forEach((task, runningIndex) => {
-        if (task.running) {
-            countdownVal = tasks[runningIndex].pomodoro_duration - tasks[runningIndex].secondsElapsed;
-            countdownMins = Math.floor(countdownVal / 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
-            countdownSecs = (countdownVal % 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
-            progressVal = tasks[runningIndex].secondsElapsed / tasks[runningIndex].pomodoro_duration * 100;
-            return;
-        }
-    });
+    const runningIndex = tasks.findIndex((elem) => elem.running);
+    if (runningIndex !== -1) {
+        countdownVal = tasks[runningIndex].pomodoro_duration - tasks[runningIndex].secondsElapsed;
+        countdownMins = Math.floor(countdownVal / 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+        countdownSecs = (countdownVal % 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+        progressVal = tasks[runningIndex].secondsElapsed / tasks[runningIndex].pomodoro_duration * 100;
+    }
 
     //What to show when nothing is running?
 
     return (
         <>
             <Typography
-                variant="h1"
+                variant={`${countdownVal !== -1 ? "h1" : "h3"}`}
                 paragraph={true}
                 classes={{
                     root: "timer-root",
-                    h1: "timer-h1"
+                    h1: "timer-h1",
+                    h3: "timer-h1"
                 }}
             >
                 {countdownVal !== -1 ? `${countdownMins}:${countdownSecs}` : "Pomorunner"}

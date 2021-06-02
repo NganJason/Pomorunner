@@ -4,7 +4,7 @@ import { ObjArrayCopy } from "../../common/ObjArrayCopy.js"
 const inititalState = []
 
 export default function taskReducer(state = inititalState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case taskConst.SET_TASK: {
             return [
                 ...action.payload
@@ -18,9 +18,9 @@ export default function taskReducer(state = inititalState, action) {
             ]            
         }
 
-        case taskConst.RESET_PROGRESS:{
+        case taskConst.RESET_PROGRESS: {
             const newState = ObjArrayCopy(state)
-            const {index} = action.payload
+            const { index } = action.payload
             newState[index].pomodoro_progress = 0;
             newState[index].secondsElapsed = 0;
 
@@ -29,7 +29,7 @@ export default function taskReducer(state = inititalState, action) {
 
         case taskConst.UPDATE_POMODORO_PROGRESS: {
             const newState = ObjArrayCopy(state)
-            const {index} = action.payload
+            const { index } = action.payload
             
             newState[index].pomodoro_progress += 1 / newState[index].pomodoro_duration * 100.0;
             newState[index].secondsElapsed++;
@@ -44,15 +44,30 @@ export default function taskReducer(state = inititalState, action) {
 
         case taskConst.SET_RUNNING_STATUS: {
             const newState = ObjArrayCopy(state);
-            const {index, status} = action.payload;
+            const { index, status } = action.payload;
             newState[index].running = status;
 
             //Stop all other tasks if set to running
-            if(status)
-            {
+            if (status) {
                 newState.forEach((state, ind) => {
-                    if(ind !== index)
+                    if (ind !== index)
                         state.running = false;
+                });
+            }
+
+            return [...newState];
+        }
+
+        case taskConst.SET_SUBTASKS_VISIBILITY: {
+            const newState = ObjArrayCopy(state);
+            const { index, subtasksVisibility } = action.payload;
+            newState[index].subtasksVisible = subtasksVisibility;
+
+            //Set all other tasks to false
+            if (subtasksVisibility) {
+                newState.forEach((state, ind) => {
+                    if (ind !== index)
+                        state.subtasksVisible = false;
                 });
             }
 

@@ -10,5 +10,6 @@ export class TaskObj {
         this.timerID = 0;
         this.lastEdit = new Date().getTime();
         this.secondsElapsed = 0;
+        this.subtasksVisible = false;
     }
 }

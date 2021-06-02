@@ -4,7 +4,9 @@ import { useState } from "react";
 
 import Auth from "./auth/components/Auth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
+import SubTaskList from "../src/components/SubTaskList/SubTaskList.js";
 import Countdown from "../src/components/Countdown/Countdown.js";
+import Grid from "@material-ui/core/Grid";
 
 import "./App.modules.css";
 import dotenv from "dotenv";
@@ -21,7 +23,16 @@ function App() {
         <div className="App">
           <Auth auth={auth} setAuth={setAuth} />
           <Countdown />
-          <TaskList />
+          <Grid container>
+            <Grid item xs={4}>
+            </Grid>
+            <Grid item xs={4}>
+              <TaskList/>
+            </Grid>
+            <Grid item xs={4}>
+              <SubTaskList/>
+            </Grid>
+          </Grid>
         </div>
       </PersistGate>
     </Provider>
