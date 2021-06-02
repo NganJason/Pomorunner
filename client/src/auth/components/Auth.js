@@ -24,7 +24,6 @@ export default function Auth({ auth, setAuth }) {
       const isSignedIn = auth.isSignedIn.he;
 
       if (!isSignedIn || !cookiesUtil.getAuthCookies()) {
-        console.log("cookies", cookiesUtil.getAuthCookies())
         loginHandler();
       }
     }
