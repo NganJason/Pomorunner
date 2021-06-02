@@ -3,7 +3,6 @@ import {userController} from "../controllers/userController.js"
 const loginUser = async (req, res, next) => {
     try {
         let resp = await userController.handleLoginUser(req)
-        res.cookie("token", resp.token, {maxAge: 900000, httpOnly: true})
         res.status(200).json(resp)
     } catch(err) {
         next(err)
