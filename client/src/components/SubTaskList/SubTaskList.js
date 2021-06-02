@@ -20,7 +20,6 @@ export default function SubTaskList(props) {
     const tasks = useSelector((state) => state.tasks);
     const [dragging, setDragging] = React.useState(false);
     const subtasksIndex = tasks.findIndex(elem => elem.subtasksVisible);
-    console.log(subtasksIndex);
 
     const task = tasks[subtasksIndex];
 

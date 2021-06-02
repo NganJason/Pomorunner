@@ -41,7 +41,6 @@ export default function TaskList() {
             if(index < tasks.length)
             {
                 if (tasks[index].running && tasks[index].pomodoro_progress < 100.0 && timerIDStates.current[index] === 0) {
-                    console.log("Start interval");
                     timerIDStates.current[index] = setInterval(() => {
                         taskActions.updatePomodoroProgress(index)
                     }, 1000);
@@ -49,7 +48,6 @@ export default function TaskList() {
     
                 else if(timerIDStates.current[index] !== 0 && !tasks[index].running)
                 {
-                    console.log("Clear interval");
                     clearInterval(timerIDStates.current[index]);
                     timerIDStates.current[index] = 0;
                 }
