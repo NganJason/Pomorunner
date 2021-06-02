@@ -1,3 +1,4 @@
+import dotenv from "dotenv";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import React from "react";
@@ -6,18 +7,19 @@ import Auth from "./auth/components/Auth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
 
 import "./App.css";
-import dotenv from "dotenv";
-import { store, persistor } from "./redux/store.js";
 import { getService } from "./services/service.js";
+import { store, persistor } from "./redux/store.js";
 
 dotenv.config();
 
 function App() {
-  const [auth, setAuth] = React.useState()
+  const [auth, setAuth] = React.useState();
 
   React.useEffect(() => {
-    const _ = getService()
-  }, [])
+    getService();
+    console.log("Init services")
+  }, []);
+
 
   return (
     <Provider store={store}>

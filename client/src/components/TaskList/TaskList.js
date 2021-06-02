@@ -10,21 +10,23 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
 
-import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
-import { taskActions } from "../../redux/Tasks/taskActions.js"
-import { TaskObj } from "../../classes/TaskObj.js";
-import { getService } from "../../services/service.js"
+import { initTaskList, getTaskList } from "../../classes/TaskList.js"
 
 export default function TaskList() {
     const tasks = useSelector((state) => state.tasks);
+    const user = useSelector((state) => state.user);
     const [dragging, setDragging] = React.useState(false);
     const toDelete = React.useRef(false);
 
     const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
 
-    async function addNewTask() {
-        const newTasks = ObjArrayCopy(tasks);
+    React.useEffect(() => {
+        (async function () {
+          initTaskList(user._id);
+        })();
+    }, [user]);
 
+    async function addNewTask() {
         //Delay until after setContent is complete
         setTimeout(() => {
             //Scroll to end of task list
@@ -32,19 +34,14 @@ export default function TaskList() {
             elem.scrollTop = elem.scrollHeight;
         }, 0);
         
-        const res = await getService().localService.task.create(
-          new TaskObj("abc", "60a8f15e44c1632e8946b4c8", 0)
-        );
-
-        const newTask = res.data
-        taskActions.addTask(newTask);
+        getTaskList().addTask()
     }
 
     React.useEffect(() => {
         timerIDStates.current.forEach((_, index) => {
             if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
                 timerIDStates.current[index] = setInterval(() => {
-                    taskActions.updatePomodoroProgress(index)
+                    getTaskList().updatePomodoroProgress(index)
                 }, 1000);
             }
         })
@@ -66,8 +63,7 @@ export default function TaskList() {
             return;
         }
 
-        const newTasks = swapContent(tasks, result.source.index, result.destination.index)
-        taskActions.setTasks(newTasks)
+        getTaskList().updateTaskOrder(result.source.index, result.destination.index)
 
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
@@ -86,21 +82,6 @@ export default function TaskList() {
             clearInterval(item);
             timerIDStates.current[index] = 0;
         });
-    }
-
-    function swapContent(content, source_index, destination_index) {
-        console.log("Swap content");
-        const newContent = ObjArrayCopy(content);
-        const removedItem = { ...content[source_index] };
-
-        newContent.splice(source_index, 1);
-
-      //If not marked for deletion
-        if (!toDelete.current)
-            newContent.splice(destination_index, 0, removedItem);
-
-        newContent.forEach(item => item.lastEdit = new Date().getTime());
-        return newContent;
     }
     
     function deleteEnter() {

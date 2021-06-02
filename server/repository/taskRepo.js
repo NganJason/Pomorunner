@@ -56,7 +56,7 @@ export class TaskRepo {
   async updateTasksOrder(reorderedTasks) {
     try {
       reorderedTasks.forEach((task, index) => {
-        task.order = index + 1
+        task.order = index
         task.save()
       })
     } catch(err) {

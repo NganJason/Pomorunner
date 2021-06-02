@@ -5,7 +5,7 @@ const getReorderedObjs = async (model, updatedOrder) => {
         let selfAndSiblingObjs = await model.getSelfAndSiblingObjs()
         selfAndSiblingObjs.sort((a,b) => a.order - b.order)
 
-        let reorderedObjs = rearrangeObjsOrder(selfAndSiblingObjs, initialOrder - 1, updatedOrder - 1)
+        let reorderedObjs = rearrangeObjsOrder(selfAndSiblingObjs, initialOrder, updatedOrder)
 
         return reorderedObjs
     } catch(err) {
