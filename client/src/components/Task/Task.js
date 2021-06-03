@@ -16,7 +16,7 @@ import { getTaskList } from "../../classes/TaskList.js"
 const fadeExit = 30;
 
 export default function Task(props) {
-    const { index, task, timerIDStates, provided, dragging } = props;
+    const { index, task, provided, dragging } = props;
     const { checked } = task;
 
     const tasks = useSelector((state) => state.tasks);
@@ -38,8 +38,6 @@ export default function Task(props) {
         switch (e.currentTarget.id) {
             case "task-delete":
                 getTaskList().deleteTask(index)
-                
-                timerIDStates.current = timerIDStates.current.splice(index, 1);
                 setOptionsVisible(false);
                 break;
 
@@ -146,7 +144,6 @@ export default function Task(props) {
                         </Grid>
                         <Grid item xs={1}>
                             <PlayPauseButton
-                                timerIDStates={timerIDStates}
                                 task={task}
                                 index={index}
                                 dragging={dragging}
