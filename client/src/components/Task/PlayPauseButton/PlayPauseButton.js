@@ -9,54 +9,27 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import "./PlayPauseButton.modules.scss";
-import { taskActions } from "../../../redux/Tasks/taskActions.js";
+import { getTaskList } from "../../../classes/TaskList.js"
 
 export default function PlayPauseButton(props) {
-    const { timerIDStates, index, dragging, task} = props;
+    const { index, dragging, task} = props;
     const { running, pomodoro_progress } = task;
 
     const tasks = useSelector((state) => state.tasks);
 
-    //Callback when play pause button is pressed
-    function playClick() {
-        const task = tasks[index];
-
-        //Toggle running state
-        task.running = !task.running;
-        
-        //Attach timer if now runnning
-        if (task.running) {
-            //Clear and reset previous timer if there was one
-            if (timerIDStates.current[index] !== 0)
-                clearInterval(timerIDStates.current[index]);
-
-            //Reset progress if it was previously run
-            if (task.pomodoro_progress === 100.0)
-                taskActions.resetProgress(index);
-            
-            timerIDStates.current[index] = setInterval(() => {
-                taskActions.updatePomodoroProgress(index);
-            }, 1000);
-        }
-
-        //Clear timer and timerID if paused
-        else {
-            clearInterval(timerIDStates.current[index]);
-            timerIDStates.current[index] = 0;
-        }
-
-        taskActions.setRunningStatus(index, task.running);
+    function playClick() {    
+        const current_running = !tasks[index].running
+        getTaskList().updateProgressRunning(index, current_running);
     }
 
     //Disable and clear timer if progress is full
     React.useEffect(() => {
-        if (pomodoro_progress === 100.0) {
-            taskActions.setRunningStatus(index, false);
-
-            clearInterval(timerIDStates.current[index]);
-            timerIDStates.current[index] = 0;
+        if (pomodoro_progress >= 100.0) {
+          if (getTaskList()) {
+              getTaskList().updateProgressRunning(index, false);
+          }
         }
-    }, [pomodoro_progress, index, timerIDStates])
+    }, [pomodoro_progress, index])
 
     return (
         <IconButton onClick={playClick} className={"play-button"}>

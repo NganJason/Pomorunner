@@ -1,6 +1,7 @@
+import dotenv from "dotenv";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { useState } from "react";
+import React from "react";
 
 import Auth from "./auth/components/Auth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
@@ -9,13 +10,20 @@ import Countdown from "../src/components/Countdown/Countdown.js";
 import Grid from "@material-ui/core/Grid";
 
 import "./App.modules.css";
+import { getService } from "./services/service.js";
 import dotenv from "dotenv";
 import { store, persistor } from "./redux/store.js";
 
 dotenv.config();
 
 function App() {
-  const [auth, setAuth] = useState()
+  const [auth, setAuth] = React.useState();
+
+  React.useEffect(() => {
+    getService();
+    console.log("Init services")
+  }, []);
+
 
   return (
     <Provider store={store}>

@@ -18,62 +18,6 @@ export default function taskReducer(state = inititalState, action) {
             ]            
         }
 
-        case taskConst.RESET_PROGRESS: {
-            const newState = ObjArrayCopy(state)
-            const { index } = action.payload
-            newState[index].pomodoro_progress = 0;
-            newState[index].secondsElapsed = 0;
-
-            return [...newState];
-        }
-
-        case taskConst.UPDATE_POMODORO_PROGRESS: {
-            const newState = ObjArrayCopy(state)
-            const { index } = action.payload
-            
-            newState[index].pomodoro_progress += 1 / newState[index].pomodoro_duration * 100.0;
-            newState[index].secondsElapsed++;
-
-            if (newState[index].pomodoro_progress > 100) {
-                newState[index].pomodoro_progress = 100
-                newState[index].secondsElapsed--;
-            }
-
-            return [...newState];
-        }
-
-        case taskConst.SET_RUNNING_STATUS: {
-            const newState = ObjArrayCopy(state);
-            const { index, status } = action.payload;
-            newState[index].running = status;
-
-            //Stop all other tasks if set to running
-            if (status) {
-                newState.forEach((state, ind) => {
-                    if (ind !== index)
-                        state.running = false;
-                });
-            }
-
-            return [...newState];
-        }
-
-        case taskConst.SET_SUBTASKS_VISIBILITY: {
-            const newState = ObjArrayCopy(state);
-            const { index, subtasksVisibility } = action.payload;
-            newState[index].subtasksVisible = subtasksVisibility;
-
-            //Set all other tasks to false
-            if (subtasksVisibility) {
-                newState.forEach((state, ind) => {
-                    if (ind !== index)
-                        state.subtasksVisible = false;
-                });
-            }
-
-            return [...newState];
-        }
-
         case taskConst.RESET_TASK: {
             return []
         }

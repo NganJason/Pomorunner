@@ -11,13 +11,12 @@ import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
 
 import "./Task.modules.scss";
-import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
-import { taskActions } from "../../redux/Tasks/taskActions.js"
+import { getTaskList } from "../../classes/TaskList.js"
 
 const fadeExit = 30;
 
 export default function Task(props) {
-    const { index, task, timerIDStates, provided, dragging } = props;
+    const { index, task, provided, dragging } = props;
     const { checked, subtasksVisible } = task;
 
     const tasks = useSelector((state) => state.tasks);
@@ -27,10 +26,7 @@ export default function Task(props) {
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
-        const newTasks = ObjArrayCopy(tasks)
-
-        newTasks[index].checked = !newTasks[index].checked;
-        taskActions.setTasks(newTasks)
+        getTaskList().updateTask(index, {checked : !tasks[index].checked})
     }
 
     function onContextMenu(e) {
@@ -47,16 +43,7 @@ export default function Task(props) {
         const newTasks = ObjArrayCopy(tasks)
         switch (e.currentTarget.id) {
             case "task-delete":
-                newTasks.splice(index, 1)
-                taskActions.setTasks(newTasks)
-
-                timerIDStates.current = timerIDStates.current.splice(index, 1);
-                setOptionsVisible(false);
-                break;
-
-            case "task-reset":
-                taskActions.resetProgress(index)
-
+                getTaskList().deleteTask(index)
                 setOptionsVisible(false);
                 break;
 
@@ -104,12 +91,8 @@ export default function Task(props) {
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
         shiftHeld.current = false;
-        const newTasks = ObjArrayCopy(tasks);
-        newTasks[index].content = temporaryTask.content;
-        newTasks[index].lastEdit = new Date().getTime();
-
-        taskActions.setTasks(newTasks)
-    }, [index, temporaryTask, tasks]);
+        getTaskList().updateTask(index, {content : temporaryTask.content, lastEdit : new Date().getTime()})        
+    }, [index, temporaryTask]);
 
     const keyDown = React.useCallback((e) => {
         if (e.key === "Shift")
@@ -174,7 +157,6 @@ export default function Task(props) {
                         </Grid>
                         <Grid item xs={1}>
                             <PlayPauseButton
-                                timerIDStates={timerIDStates}
                                 task={task}
                                 index={index}
                                 dragging={dragging}
