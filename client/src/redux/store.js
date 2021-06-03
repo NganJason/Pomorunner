@@ -1,11 +1,16 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
+import { createStateSyncMiddleware } from "redux-state-sync";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 
 import taskReducer from "./Tasks/taskReducer.js";
 import userReducer from "./User/userReducer.js";
+
+const reduxStateSyncConfig = {
+  blacklist: ["persist/PERSIST", "persist/REHYDRATE"],
+};
 
 const persistConfig = {
   key: "root",
@@ -23,7 +28,12 @@ const middleware = [thunk];
 
 const store = createStore(
   persistedReducer,
-  composeWithDevTools(applyMiddleware(...middleware))
+  composeWithDevTools(
+    applyMiddleware(
+      ...middleware,
+      createStateSyncMiddleware(reduxStateSyncConfig)
+    )
+  )
 );
 
 const persistor = persistStore(store);
