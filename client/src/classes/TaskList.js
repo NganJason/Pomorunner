@@ -194,10 +194,6 @@ function calculate_new_pomodoro_progress(task) {
 
   let new_pomodoro_progress = task.pomodoro_progress + (seconds_passed / task.pomodoro_duration) * 100.0;
 
-  // let new_pomodoro_progress =
-  //   task.progress_before_last_end +
-  //   (seconds_passed / task.pomodoro_duration) * 100.0;
-
   if (new_pomodoro_progress >= 100) {
     return 100.0
   }
