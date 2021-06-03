@@ -12,51 +12,24 @@ import "./PlayPauseButton.modules.scss";
 import { getTaskList } from "../../../classes/TaskList.js"
 
 export default function PlayPauseButton(props) {
-    const { timerIDStates, index, dragging, task} = props;
+    const { index, dragging, task} = props;
     const { running, pomodoro_progress } = task;
 
     const tasks = useSelector((state) => state.tasks);
 
     function playClick() {    
         const current_running = !tasks[index].running
-        const updateObj = {running : current_running}
-        
-        if (current_running) {
-            //Clear and reset previous timer if there was one
-            if (timerIDStates.current[index] !== 0) {
-              clearInterval(timerIDStates.current[index]);
-            }
-
-            //Reset progress if it was previously run
-            if (tasks[index].pomodoro_progress === 100.0) {
-              clearInterval(timerIDStates.current[index]);
-              updateObj.pomodoro_progress = 0;
-            }
-            
-            timerIDStates.current[index] = setInterval(() => {
-                getTaskList().updatePomodoroProgress(index)
-            }, 1000);
-        }
-
-        else {
-            clearInterval(timerIDStates.current[index]);
-            timerIDStates.current[index] = 0;
-        }
-
-        getTaskList().updateTask(index, updateObj);
+        getTaskList().updateProgressRunning(index, current_running);
     }
 
     //Disable and clear timer if progress is full
     React.useEffect(() => {
         if (pomodoro_progress >= 100.0) {
-          clearInterval(timerIDStates.current[index]);
-          timerIDStates.current[index] = 0;
-            
           if (getTaskList()) {
-            getTaskList().updateTask(index, { running: false });
+              getTaskList().updateProgressRunning(index, false);
           }
         }
-    }, [pomodoro_progress, index, timerIDStates])
+    }, [pomodoro_progress, index])
 
     return (
         <IconButton onClick={playClick} className={"play-button"}>
