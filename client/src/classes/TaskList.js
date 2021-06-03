@@ -81,22 +81,39 @@ class TaskList {
     taskActions.setTasks(tasks);
   }
 
-  async updatePomodoroProgress(index) {
-    const tasks = ObjArrayCopy(store.getState().tasks)
-    const updateObj = {task_id: tasks[index]._id}
+  updateProgressRunning(index, isRunning) {
+    const tasks = ObjArrayCopy(store.getState().tasks);
+    const task = tasks[index];
 
-    let new_pomodoro_progress = tasks[index].pomodoro_progress + (1/ tasks[index].pomodoro_duration * 100.0)
+    if (isRunning) {
+      task.last_pomodoro_start = new Date().getTime()
 
-    if(new_pomodoro_progress >= 100) {
-        new_pomodoro_progress = 100      
+      if (task.pomodoro_progress >= 100) {
+        task.pomodoro_progress = 0
+        task.progress_before_last_end = 0
+      }
+      
+    } else {
+      task.last_pomodoro_end = new Date().getTime()
+      task.progress_before_last_end = calculate_new_pomodoro_progress(task);
     }
 
-    tasks[index].pomodoro_progress = new_pomodoro_progress;
-    updateObj.pomodoro_progress = new_pomodoro_progress
+    task.running = isRunning;
+    taskActions.setTasks(tasks)
+  }
 
+  async updatePomodoroProgress(index) {
+    const tasks = ObjArrayCopy(store.getState().tasks)
+    const task = tasks[index]
+
+    if (!task.running) {
+      return
+    }
+
+    let new_pomodoro_progress = calculate_new_pomodoro_progress(task)
+
+    tasks[index].pomodoro_progress = new_pomodoro_progress;
     taskActions.setTasks(tasks);
-    
-    await getService().localService.task.update(updateObj)
   }
 
   async updateTaskOrder(source_index, destination_index) {
@@ -136,4 +153,18 @@ function swapContent(content, source_index, destination_index) {
     });
 
   return newContent;
+}
+
+function calculate_new_pomodoro_progress(task) {
+  const seconds_passed = (new Date().getTime() - task.last_pomodoro_start)/1000
+
+  let new_pomodoro_progress =
+    task.progress_before_last_end +
+    (seconds_passed / task.pomodoro_duration) * 100.0;
+
+  if (new_pomodoro_progress >= 100) {
+    return 100.0
+  }
+
+  return new_pomodoro_progress
 }

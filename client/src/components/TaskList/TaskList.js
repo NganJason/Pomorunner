@@ -11,6 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
 
 import { initTaskList, getTaskList } from "../../classes/TaskList.js"
+import { GlobalTimer } from "../../classes/GlobalTimer.js"
 
 export default function TaskList() {
     const tasks = useSelector((state) => state.tasks);
@@ -18,34 +19,26 @@ export default function TaskList() {
     const [dragging, setDragging] = React.useState(false);
     const toDelete = React.useRef(false);
 
-    const timerIDStates = React.useRef(tasks.map((item) => item.timerID));
+    React.useEffect(() => { 
+    initTaskList(user._id);
 
-    React.useEffect(() => {
-        (async function () {
-          initTaskList(user._id);
-        })();
+    const globalTimer = new GlobalTimer()
+    globalTimer.setTimer()
+
+    return () => {
+        clearInterval(globalTimer.timerID)
+    }
     }, [user]);
 
     async function addNewTask() {
-        //Delay until after setContent is complete
-        setTimeout(() => {
-            //Scroll to end of task list
-            const elem = document.getElementById("task-list-paper");
-            elem.scrollTop = elem.scrollHeight;
-        }, 0);
-        
-        getTaskList().addTask()
-    }
+      //Scroll to end of task list
+      setTimeout(() => {
+        const elem = document.getElementById("task-list-paper");
+        elem.scrollTop = elem.scrollHeight;
+      }, 0);
 
-    React.useEffect(() => {
-        timerIDStates.current.forEach((_, index) => {
-            if (index < tasks.length && tasks[index].running && timerIDStates.current[index] === 0) {
-                timerIDStates.current[index] = setInterval(() => {
-                    getTaskList().updatePomodoroProgress(index)
-                }, 1000);
-            }
-        })
-    }, [tasks, timerIDStates])
+      getTaskList().addTask();
+    }
 
     const dragEndHandler = (result) => {
         if (!result.destination || result.destination.index === result.source.index || !result) {
@@ -75,13 +68,6 @@ export default function TaskList() {
         //Set dragging which disables animation on circular progress and fade in/out of play/pause
         setDragging(true);
         document.activeElement.blur();
-
-        //Disable all timers on pickup of any item
-        //Map or foreach does not work to set timerIDStates.current. Explicit set required
-        timerIDStates.current.forEach((item, index) => {
-            clearInterval(item);
-            timerIDStates.current[index] = 0;
-        });
     }
     
     function deleteEnter() {
@@ -109,7 +95,6 @@ export default function TaskList() {
                                                 {(provided) => {
                                                     return <Task
                                                         index={index}
-                                                        timerIDStates={timerIDStates}
                                                         task={task}
                                                         provided={provided}
                                                         dragging={dragging}
