@@ -12,7 +12,7 @@ import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import SubTask from "../SubTask/SubTask.js";
 
 import { useSelector } from "react-redux";
-import { taskActions } from "../../redux/Tasks/taskActions.js";
+import { getTaskList } from "../../classes/TaskList.js"
 
 const subtasks = [new TaskObj("Buy medicine", 0), new TaskObj("Wash fur", 0)];
 
@@ -24,7 +24,7 @@ export default function SubTaskList(props) {
     const task = tasks[subtasksIndex];
 
     function closeClicked(e) {
-        taskActions.setSubtasksVisibility(subtasksIndex, false);
+        getTaskList().setSubtasksVisibility(subtasksIndex, false);
     }
 
     function dragStartHandler(e) {

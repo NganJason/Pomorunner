@@ -13,7 +13,7 @@ export default function Countdown(props) {
     if (runningIndex !== -1) {
         countdownVal = tasks[runningIndex].pomodoro_duration - tasks[runningIndex].secondsElapsed;
         countdownMins = Math.floor(countdownVal / 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
-        countdownSecs = (countdownVal % 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false });
+        countdownSecs = (countdownVal % 60).toLocaleString('en-US', { minimumIntegerDigits: 2, useGrouping: false, maximumFractionDigits: 0 });
         progressVal = tasks[runningIndex].secondsElapsed / tasks[runningIndex].pomodoro_duration * 100;
     }
 

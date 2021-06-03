@@ -21,5 +21,7 @@ export class TaskObj extends BaseTask{
         this.last_pomodoro_start = new Date().getTime()
         this.last_pomodoro_end = new Date().getTime()
         this.progress_before_last_end = 0
+        this.subtasksVisible = false;
+        this.secondsElapsed = 0;
     }
 }

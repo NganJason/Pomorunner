@@ -40,7 +40,6 @@ export default function Task(props) {
     }
 
     function onOptionsButtonClick(e) {
-        const newTasks = ObjArrayCopy(tasks)
         switch (e.currentTarget.id) {
             case "task-delete":
                 getTaskList().deleteTask(index)
@@ -52,7 +51,12 @@ export default function Task(props) {
                 break;
 
             case "task-subtasks":
-                taskActions.setSubtasksVisibility(index, true);
+                getTaskList().setSubtasksVisibility(index, true);
+                setOptionsVisible(false);
+                break;
+
+            case "task-reset":
+                getTaskList().resetTask(index);
                 setOptionsVisible(false);
                 break;
 

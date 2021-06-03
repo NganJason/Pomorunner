@@ -11,7 +11,6 @@ import Grid from "@material-ui/core/Grid";
 
 import "./App.modules.css";
 import { getService } from "./services/service.js";
-import dotenv from "dotenv";
 import { store, persistor } from "./redux/store.js";
 
 dotenv.config();
