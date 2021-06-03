@@ -7,7 +7,7 @@ const checkValidRoute = (req, res, next) => {
 }
 
 const logError = (err, req, res, next) => {
-    errorLogger.logError(err)
+    errorLogger.logError(req, err)
     next(err)
 }
 
