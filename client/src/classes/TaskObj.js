@@ -1,12 +1,21 @@
-export class TaskObj {
-    constructor(content, userID){
-        this.pomodoro_progress = 0;
-        this.pomodoro_duration = 10;
-        this.content = content;
-        this.checked = false;
-        this.date = new Date();
-        this.userID = userID;
-        this.running = false;
+export class BaseTask {
+    constructor(dbTask) {
+        this._id = dbTask._id
+        this.order = dbTask.order
+        this.content = dbTask.content || ""
+        this.pomodoro_duration = dbTask.pomodoro_duration || 45
+        this.pomodoro_progress = dbTask.pomodoro_progress || 0
+        this.checked = dbTask.checked || false
+        this.running = dbTask.running || false;
+        this.datestring = dbTask.datestring || new Date().toISOString().slice(0, 10)
+        this.user_id = dbTask.user_id
+        this.subtasks = dbTask.subtasks || []
+    }
+}
+
+export class TaskObj extends BaseTask{
+    constructor(dbTask){
+        super(dbTask)
         this.timerID = 0;
         this.lastEdit = new Date().getTime();
     }

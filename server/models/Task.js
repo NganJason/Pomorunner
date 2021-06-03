@@ -26,6 +26,10 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    running: {
+      type: Boolean,
+      default: false,
+    },
     datestring: {
       type: String,
       default: new Date().toISOString().slice(0, 10),

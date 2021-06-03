@@ -9,8 +9,7 @@ import PauseIcon from '@material-ui/icons/Pause';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 
 import "./PlayPauseButton.modules.scss";
-import { ObjArrayCopy } from "../../../common/ObjArrayCopy.js";
-import { taskActions } from "../../../redux/Tasks/taskActions.js";
+import { getTaskList } from "../../../classes/TaskList.js"
 
 export default function PlayPauseButton(props) {
     const { timerIDStates, index, dragging, task} = props;
@@ -18,48 +17,44 @@ export default function PlayPauseButton(props) {
 
     const tasks = useSelector((state) => state.tasks);
 
-    //Callback when play pause button is pressed
-    function playClick() {
-        //Deep copy of array of objects
-        const newTasks = ObjArrayCopy(tasks);
-
-        //Toggle running state
-        newTasks[index].running = !tasks[index].running;
+    function playClick() {    
+        const current_running = !tasks[index].running
+        const updateObj = {running : current_running}
         
-        //Attach timer if now runnning
-        if (newTasks[index].running) {
+        if (current_running) {
             //Clear and reset previous timer if there was one
-            if (timerIDStates.current[index] !== 0)
-                clearInterval(timerIDStates.current[index]);
+            if (timerIDStates.current[index] !== 0) {
+              clearInterval(timerIDStates.current[index]);
+            }
 
             //Reset progress if it was previously run
-            if (newTasks[index].pomodoro_progress === 100.0)
-                newTasks[index].pomodoro_progress = 0;
+            if (tasks[index].pomodoro_progress === 100.0) {
+              clearInterval(timerIDStates.current[index]);
+              updateObj.pomodoro_progress = 0;
+            }
             
             timerIDStates.current[index] = setInterval(() => {
-                taskActions.updatePomodoroProgress(index);
+                getTaskList().updatePomodoroProgress(index)
             }, 1000);
         }
 
-        //Clear timer and timerID if paused
         else {
             clearInterval(timerIDStates.current[index]);
             timerIDStates.current[index] = 0;
         }
 
-        taskActions.setTasks(newTasks);
+        getTaskList().updateTask(index, updateObj);
     }
 
     //Disable and clear timer if progress is full
     React.useEffect(() => {
-        if (pomodoro_progress === 100.0) {
-            const newTasks = ObjArrayCopy(tasks);
-            newTasks[index].running = false;
-
-            clearInterval(timerIDStates.current[index]);
-            timerIDStates.current[index] = 0;
-
-            taskActions.setTasks(newTasks)
+        if (pomodoro_progress >= 100.0) {
+          clearInterval(timerIDStates.current[index]);
+          timerIDStates.current[index] = 0;
+            
+          if (getTaskList()) {
+            getTaskList().updateTask(index, { running: false });
+          }
         }
     }, [pomodoro_progress, index, timerIDStates])
 
