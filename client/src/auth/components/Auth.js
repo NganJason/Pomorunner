@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from "react";
 
-import { cookiesUtil } from "../cookies.js";
 import { getService } from "../../services/service.js";
 import { loadGoogleScript, onGoogleScriptLoad } from "../googleAuth.js";
 import { userActions } from "../../redux/User/userActions.js"
