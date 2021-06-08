@@ -17,8 +17,8 @@ import { taskActions } from "../../redux/Tasks/taskActions.js"
 const fadeExit = 30;
 
 export default function SubTask(props) {
-    const { index, task, timerIDStates, provided, dragging } = props;
-    const { checked, subtasksVisible } = task;
+    const { index, task, provided, dragging } = props;
+    const { checked } = task;
 
     const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
@@ -27,45 +27,31 @@ export default function SubTask(props) {
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
-        const newTasks = ObjArrayCopy(tasks)
+        // const newTasks = ObjArrayCopy(tasks)
 
-        newTasks[index].checked = !newTasks[index].checked;
-        taskActions.setTasks(newTasks)
+        // newTasks[index].checked = !newTasks[index].checked;
+        // taskActions.setTasks(newTasks)
     }
 
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        if(subtasksVisible) 
-            return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
     }
 
     function onOptionsButtonClick(e) {
-        const newTasks = ObjArrayCopy(tasks)
+        // const newTasks = ObjArrayCopy(tasks)
         switch (e.currentTarget.id) {
             case "task-delete":
-                newTasks.splice(index, 1)
-                taskActions.setTasks(newTasks)
-
-                timerIDStates.current = timerIDStates.current.splice(index, 1);
-                setOptionsVisible(false);
-                break;
-
-            case "task-reset":
-                taskActions.resetProgress(index)
+                // newTasks.splice(index, 1)
+                // taskActions.setTasks(newTasks)
 
                 setOptionsVisible(false);
                 break;
 
             case "task-cancel":
-                setOptionsVisible(false);
-                break;
-
-            case "task-subtasks":
-                taskActions.setSubtasksVisibility(index, true);
                 setOptionsVisible(false);
                 break;
 
@@ -129,7 +115,7 @@ export default function SubTask(props) {
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
             <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
-                <Fade in={!optionsVisible && !subtasksVisible} timeout={{ exit: fadeExit }}>
+                <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
@@ -177,23 +163,12 @@ export default function SubTask(props) {
                 <Fade in={optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
                         <Grid item>
-                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-subtasks" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Subtasks</Button>
-                        </Grid>
-                        <Grid item>
                             <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
                         </Grid>
                         <Grid item>
                             <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>
                         </Grid>
                     </Grid>
-                </Fade>
-                <Fade in={subtasksVisible} timeout={{ exit: fadeExit }}>
-                    <div className={"subtasks-indicator"}>
-                        <p> =======) Subtasks visible</p>
-                    </div>
                 </Fade>
                 <div className="drag-handle-div">
                     <Fade in={handleVisible}>

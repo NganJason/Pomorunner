@@ -19,21 +19,20 @@ export default function Task(props) {
     const { index, task, provided, dragging } = props;
     const { checked, subtasksVisible } = task;
 
-    const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
     const [temporaryTask, setTemporaryTask] = React.useState({ content: task.content, lastEdit: new Date().getTime() });
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
-        getTaskList().updateTask(index, {checked : !tasks[index].checked})
+        getTaskList().updateTask(index, { checked: !checked })
     }
 
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        if(subtasksVisible) 
-            return;
+        // if (subtasksVisible)
+        //     return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
@@ -95,7 +94,7 @@ export default function Task(props) {
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
         shiftHeld.current = false;
-        getTaskList().updateTask(index, {content : temporaryTask.content, lastEdit : new Date().getTime()})        
+        getTaskList().updateTask(index, { content: temporaryTask.content, lastEdit: new Date().getTime() })
     }, [index, temporaryTask]);
 
     const keyDown = React.useCallback((e) => {
@@ -115,8 +114,14 @@ export default function Task(props) {
 
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
-            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
-                <Fade in={!optionsVisible && !subtasksVisible} timeout={{ exit: fadeExit }}>
+            <Paper
+                className={`task-paper ${subtasksVisible ? "selected-task-paper" : "null"}`}
+                elevation={0}
+                onContextMenu={onContextMenu}
+                onMouseOver={onMouseEnter}
+                onMouseLeave={onMouseLeave}
+            >
+                <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
@@ -183,11 +188,6 @@ export default function Task(props) {
                             <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>
                         </Grid>
                     </Grid>
-                </Fade>
-                <Fade in={subtasksVisible} timeout={{ exit: fadeExit }}>
-                    <div className={"subtasks-indicator"}>
-                        <p> =======) Subtasks visible</p>
-                    </div>
                 </Fade>
                 <div className="drag-handle-div">
                     <Fade in={handleVisible}>
