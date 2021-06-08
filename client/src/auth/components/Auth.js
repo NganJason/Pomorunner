@@ -1,6 +1,5 @@
 import { useEffect, useCallback } from "react";
 
-import { cookiesUtil } from "../cookies.js";
 import { getService } from "../../services/service.js";
 import { loadGoogleScript, onGoogleScriptLoad } from "../googleAuth.js";
 import { userActions } from "../../redux/User/userActions.js"
@@ -10,7 +9,6 @@ export default function Auth({ auth, setAuth }) {
     const googleResponse = await auth.signIn();
 
     const userRes = await getService().localService.user.login(googleResponse.qc.id_token)
-    cookiesUtil.setAuthCookies(userRes.data.token);
     userActions.setUser(userRes.data.user);
   }, [auth]);
 
@@ -23,7 +21,7 @@ export default function Auth({ auth, setAuth }) {
     if (auth) {
       const isSignedIn = auth.isSignedIn.he;
 
-      if (!isSignedIn || !cookiesUtil.getAuthCookies()) {
+      if (!isSignedIn) {
         loginHandler();
       }
     }
