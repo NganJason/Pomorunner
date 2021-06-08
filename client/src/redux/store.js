@@ -29,16 +29,12 @@ const middleware = [thunk];
 
 const store = createStore(
   persistedReducer,
-<<<<<<< HEAD
-  composeWithDevTools(applyMiddleware(...middleware, createStateSyncMiddleware(reduxStateSyncConfig))),
-=======
   composeWithDevTools(
     applyMiddleware(
       ...middleware,
       createStateSyncMiddleware(reduxStateSyncConfig)
     )
   )
->>>>>>> fb0a8c96cb6eccc38b69073b6c704ca9932faa4c
 );
 
 const persistor = persistStore(store);
