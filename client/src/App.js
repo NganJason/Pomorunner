@@ -6,8 +6,11 @@ import React from "react";
 import DevAuth from "./auth/components/DevAuth.js";
 import ProductionAuth from "./auth/components/ProductionAuth.js";
 import TaskList from "../src/components/TaskList/TaskList.js";
+import SubTaskList from "../src/components/SubTaskList/SubTaskList.js";
+import Countdown from "../src/components/Countdown/Countdown.js";
+import Grid from "@material-ui/core/Grid";
 
-import "./App.css";
+import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
 
@@ -25,7 +28,17 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <div className="App">
         {process.env.NODE_ENV === "development" ? <DevAuth /> : <ProductionAuth />}
-          <TaskList />
+          <Countdown />
+          <Grid container>
+            <Grid item xs={4}>
+            </Grid>
+            <Grid item xs={4}>
+              <TaskList/>
+            </Grid>
+            <Grid item xs={4}>
+              <SubTaskList/>
+            </Grid>
+          </Grid>
         </div>
       </PersistGate>
     </Provider>

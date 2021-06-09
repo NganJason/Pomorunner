@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useState } from "react";
 
-import { cookiesUtil } from "../cookies.js";
 import { getService } from "../../services/service.js";
 import { googleOAuth } from "../googleAuth.js";
 import { userActions } from "../../redux/User/userActions.js"
+import { store } from "../../redux/store.js"
 
 export default function DevAuth() {
   const [auth, setAuth] = useState();
@@ -12,8 +12,6 @@ export default function DevAuth() {
     const googleResponse = await auth.signIn();
 
     const userRes = await getService().localService.user.login(googleResponse.qc.id_token)
-
-    cookiesUtil.setAuthCookies(userRes.data.token);
     userActions.setUser(userRes.data.user);
   }, [auth]);
 
@@ -25,8 +23,9 @@ export default function DevAuth() {
   useEffect(() => {
     if (auth) {
       const isSignedIn = auth.isSignedIn.he;
-
-      if (!isSignedIn || !cookiesUtil.getAuthCookies()) {
+      const user = store.getState().user;
+      
+      if (!isSignedIn || !user._id) {
         loginHandler();
       }
     }

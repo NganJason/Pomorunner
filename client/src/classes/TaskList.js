@@ -26,10 +26,27 @@ class TaskList {
   }
 
   async setTaskListState() {
-    const task = await getService().localService.user.getTasks(this.user_id);
+    const dbTasks = await getService().localService.user.getTasks(this.user_id);
+    const taskObjs = dbTasksToTaskObjs(dbTasks.data);
+    taskObjs.sort((a, b) => a.order - b.order);
 
-    const taskObjs = dbTasksToTaskObjs(task.data);
-    taskObjs.sort((a, b) => a.order - b.order)
+    const stateTasks = ObjArrayCopy(store.getState().tasks);
+    stateTasks.sort((a, b) => a.order - b.order);
+
+    if (stateTasks.length > 0) {
+      stateTasks.forEach(stateTask => {
+        taskObjs.forEach(taskObj => {
+          if (taskObj._id == stateTask._id) {
+            taskObj.pomodoro_progress = stateTask.pomodoro_progress
+            taskObj.running = stateTask.running
+
+            taskObj.progress_before_last_end = stateTask.progress_before_last_end
+            taskObj.last_pomodoro_start = stateTask.last_pomodoro_start
+            taskObj.last_pomodoro_end = stateTask.last_pomodoro_end
+          }
+        })
+      })
+    }
     
     taskActions.setTasks(taskObjs);
     this.next_order = taskObjs.length;
@@ -88,6 +105,14 @@ class TaskList {
     if (isRunning) {
       task.last_pomodoro_start = new Date().getTime()
 
+      //Stop all other tasks
+      tasks.forEach((item, ind) => {
+        if(index !== ind) {
+          item.running = false;
+          item.last_pomodoro_end = new Date().getTime();
+        }
+      })
+
       if (task.pomodoro_progress >= 100) {
         task.pomodoro_progress = 0
         task.progress_before_last_end = 0
@@ -100,6 +125,30 @@ class TaskList {
 
     task.running = isRunning;
     taskActions.setTasks(tasks)
+  }
+
+  resetTask(index) {
+    const tasks = ObjArrayCopy(store.getState().tasks);
+    const task = tasks[index];
+    task.pomodoro_progress = 0;
+    task.secondsElapsed = 0;
+
+    taskActions.setTasks(tasks);
+  }
+
+  setSubtasksVisibility(index, visible) {
+    const tasks = ObjArrayCopy(store.getState().tasks);
+    tasks[index].subtasksVisible = visible;
+
+    //Set all other subtasks invisible
+    if(visible) {
+      tasks.forEach((item, ind) => {
+        if(ind !== index)
+          item.subtasksVisible = false;
+      });
+    }
+
+    taskActions.setTasks(tasks);
   }
 
   async updatePomodoroProgress(index) {
@@ -157,10 +206,10 @@ function swapContent(content, source_index, destination_index) {
 
 function calculate_new_pomodoro_progress(task) {
   const seconds_passed = (new Date().getTime() - task.last_pomodoro_start)/1000
+  task.last_pomodoro_start = new Date().getTime();
+  task.secondsElapsed += seconds_passed;
 
-  let new_pomodoro_progress =
-    task.progress_before_last_end +
-    (seconds_passed / task.pomodoro_duration) * 100.0;
+  let new_pomodoro_progress = task.pomodoro_progress + (seconds_passed / task.pomodoro_duration) * 100.0;
 
   if (new_pomodoro_progress >= 100) {
     return 100.0

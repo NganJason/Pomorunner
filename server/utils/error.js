@@ -63,7 +63,7 @@ export const errorResponse = {
   IntervalServerError,
 };
 
-const logError = (err) => {
+const logError = (req, err) => {
 
     let today = new Date();
     let date = today.getFullYear()+'/'+(today.getMonth()+1)+'/'+today.getDate();
@@ -73,6 +73,8 @@ const logError = (err) => {
     const error = {
       date: dateTime,
       name: err.name,
+      method: req.method,
+      url: req.url,
       statusCode: err.statusCode,
       message: err.message,
       stack: err.stack,
