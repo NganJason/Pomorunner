@@ -63,7 +63,7 @@ class TaskList {
     taskActions.addTask(newTaskObj);
   }
 
-  async updateTask(index, updateObj) {
+  updateTask(index, updateObj) {
     const tasks = ObjArrayCopy(store.getState().tasks);
     const task = tasks[index];
 
@@ -74,28 +74,29 @@ class TaskList {
     taskActions.setTasks(tasks);
 
     updateObj.task_id = task._id;
-    await getService().localService.task.update(updateObj);
+    getService().localService.task.update(updateObj);
   }
 
-  async deleteTask(index) {
+  deleteTask(index) {
     const tasks = ObjArrayCopy(store.getState().tasks)
 
     const removedTask = tasks.splice(index, 1)[0]
     
-    await getService().localService.task.delete(removedTask._id)
-
-    tasks.forEach( async (task, index) => {
+    tasks.forEach((task, index) => {
         if(task.order !== index) {
             task.order = index
-
-            await getService().localService.task.update({
-                task_id: task._id,
-                order: index,
-            });
         }
     })
-
     taskActions.setTasks(tasks);
+
+    getService().localService.task.delete(removedTask._id);
+
+    tasks.forEach((task, index) => {
+      getService().localService.task.update({
+        task_id: task._id,
+        order: index,
+      });
+    })
   }
 
   updateProgressRunning(index, isRunning) {
@@ -119,7 +120,7 @@ class TaskList {
     taskActions.setTasks(tasks)
   }
 
-  async updatePomodoroProgress(index) {
+  updatePomodoroProgress(index) {
     const tasks = ObjArrayCopy(store.getState().tasks)
     const task = tasks[index]
 
@@ -133,7 +134,7 @@ class TaskList {
     taskActions.setTasks(tasks);
   }
 
-  async updateTaskOrder(source_index, destination_index) {
+  updateTaskOrder(source_index, destination_index) {
       let tasks = ObjArrayCopy(store.getState().tasks);
       const updateObj = {
           task_id : tasks[source_index]._id,
@@ -143,7 +144,7 @@ class TaskList {
       tasks = swapContent(tasks, source_index, destination_index);
       taskActions.setTasks(tasks);
       
-      await getService().localService.task.update(updateObj)
+      getService().localService.task.update(updateObj)
   }
 }
 
