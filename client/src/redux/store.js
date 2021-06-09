@@ -1,4 +1,5 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
+import { createStateSyncMiddleware } from "redux-state-sync";
 import { composeWithDevTools } from "redux-devtools-extension";
 import { createStateSyncMiddleware } from "redux-state-sync";
 import { persistStore, persistReducer } from "redux-persist";

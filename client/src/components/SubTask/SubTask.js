@@ -7,55 +7,51 @@ import DragHandleIcon from "@material-ui/icons/DragHandle";
 import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
-import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
+// import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
 import TextField from "@material-ui/core/TextField";
 
-import "./Task.modules.scss";
-import { getTaskList } from "../../classes/TaskList.js"
+import "./SubTask.modules.scss";
+import { ObjArrayCopy } from "../../common/ObjArrayCopy.js";
+import { taskActions } from "../../redux/Tasks/taskActions.js"
 
 const fadeExit = 30;
 
-export default function Task(props) {
+export default function SubTask(props) {
     const { index, task, provided, dragging } = props;
-    const { checked, subtasksVisible } = task;
+    const { checked } = task;
 
+    const tasks = useSelector((state) => state.tasks);
     const [optionsVisible, setOptionsVisible] = React.useState(false);
     const [handleVisible, setHandleVisible] = React.useState(false);
     const [temporaryTask, setTemporaryTask] = React.useState({ content: task.content, lastEdit: new Date().getTime() });
     const shiftHeld = React.useRef(false);
 
     function onCheckboxChange() {
-        getTaskList().updateTask(index, { checked: !checked })
+        // const newTasks = ObjArrayCopy(tasks)
+
+        // newTasks[index].checked = !newTasks[index].checked;
+        // taskActions.setTasks(newTasks)
     }
 
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        // if (subtasksVisible)
-        //     return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
     }
 
     function onOptionsButtonClick(e) {
+        // const newTasks = ObjArrayCopy(tasks)
         switch (e.currentTarget.id) {
             case "task-delete":
-                getTaskList().deleteTask(index)
+                // newTasks.splice(index, 1)
+                // taskActions.setTasks(newTasks)
+
                 setOptionsVisible(false);
                 break;
 
             case "task-cancel":
-                setOptionsVisible(false);
-                break;
-
-            case "task-subtasks":
-                getTaskList().setSubtasksVisibility(index, true);
-                setOptionsVisible(false);
-                break;
-
-            case "task-reset":
-                getTaskList().resetTask(index);
                 setOptionsVisible(false);
                 break;
 
@@ -94,8 +90,12 @@ export default function Task(props) {
     //Save temporary content to original store
     const textFocusOut = React.useCallback(() => {
         shiftHeld.current = false;
-        getTaskList().updateTask(index, { content: temporaryTask.content, lastEdit: new Date().getTime() })
-    }, [index, temporaryTask]);
+        const newTasks = ObjArrayCopy(tasks);
+        newTasks[index].content = temporaryTask.content;
+        newTasks[index].lastEdit = new Date().getTime();
+
+        taskActions.setTasks(newTasks)
+    }, [index, temporaryTask, tasks]);
 
     const keyDown = React.useCallback((e) => {
         if (e.key === "Shift")
@@ -114,19 +114,13 @@ export default function Task(props) {
 
     return (
         <Grid item xs={12} ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} className="transition-style">
-            <Paper
-                className={`task-paper ${subtasksVisible ? "selected-task-paper" : "null"}`}
-                elevation={0}
-                onContextMenu={onContextMenu}
-                onMouseOver={onMouseEnter}
-                onMouseLeave={onMouseLeave}
-            >
+            <Paper className={`task-paper`} elevation={0} onContextMenu={onContextMenu} onMouseOver={onMouseEnter} onMouseLeave={onMouseLeave}>
                 <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
                         <Grid item xs={1} className={"task-item"}>
                             <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
                         </Grid>
-                        <Grid item xs={10} className={"text-field-grid-item"}>
+                        <Grid item xs={11} className={"text-field-grid-item"}>
                             <Grid container
                                 direction="column"
                                 justify="space-between"
@@ -139,7 +133,7 @@ export default function Task(props) {
                                         }}
                                         InputProps={{
                                             classes: {
-                                                root: "outlined-root task-input-outlined-root",
+                                                root: "outlined-root sub-task-input-outlined-root",
                                                 multiline: "outlined-multiline",
                                                 disabled: "text-field-disabled",
                                                 notchedOutline: "text-field-border",
@@ -164,23 +158,10 @@ export default function Task(props) {
                                 </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={1}>
-                            <PlayPauseButton
-                                task={task}
-                                index={index}
-                                dragging={dragging}
-                            />
-                        </Grid>
                     </Grid>
                 </Fade>
                 <Fade in={optionsVisible} timeout={{ exit: fadeExit }}>
                     <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
-                        <Grid item>
-                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-subtasks" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Subtasks</Button>
-                        </Grid>
                         <Grid item>
                             <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
                         </Grid>

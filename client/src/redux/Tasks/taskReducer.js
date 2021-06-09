@@ -4,7 +4,7 @@ import { ObjArrayCopy } from "../../common/ObjArrayCopy.js"
 const inititalState = []
 
 export default function taskReducer(state = inititalState, action) {
-    switch(action.type) {
+    switch (action.type) {
         case taskConst.SET_TASK: {
             return [
                 ...action.payload
