@@ -32,7 +32,7 @@ function App() {
           <Fade in={!loading} timeout={{ enter: 1000 }}>
             <div className="App">
               {process.env.NODE_ENV === "development" ? (
-                <DevAuth />
+                <DevAuth setLoading={setLoading}/>
               ) : (
                 <ProductionAuth setLoading={setLoading} />
               )}

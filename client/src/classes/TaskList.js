@@ -27,14 +27,13 @@ class TaskList {
 
   async setTaskListState() {
     const stateTasks = ObjArrayCopy(store.getState().tasks);
-    console.log("This is state tasks", stateTasks);
+
     if (stateTasks.length > 0){
-      console.log("Setting from state tasks")
       this.next_order = stateTasks.length;
       return
     } else {
       const taskObjs = await this.getTasksFromDB()
-      console.log("Setting from db");
+
       taskActions.setTasks(taskObjs);
       this.next_order = taskObjs.length;
     }
@@ -71,7 +70,7 @@ class TaskList {
     const newTaskID = currentTime.toString() + this.user_id
 
     const newTaskObj = new TaskObj({
-      _id: newTaskID,
+      _id: newTaskID.slice(0,24),
       user_id: this.user_id,
       order: this.next_order
     })
@@ -79,7 +78,7 @@ class TaskList {
     taskActions.addTask(newTaskObj);
     this.next_order++;
 
-    const res = getService().localService.task.create(newTaskObj)
+    getService().localService.task.create(newTaskObj)
   }
 
   updateTask(index, updateObj) {

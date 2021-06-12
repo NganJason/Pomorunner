@@ -68,9 +68,9 @@ const checkAuth = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (token) {
-        res.status(200).json({"isAuth": true})
+        res.status(200).json({isAuth: true})
     } else {
-        res.status(200).json({ isAuth: true });
+        res.status(200).json({ isAuth: false });
     }
 }
 
