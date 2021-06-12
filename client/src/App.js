@@ -29,7 +29,7 @@ function App() {
     <div className="default-background">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Fade in={!loading} timeout={{ enter: 1000 }}>
+          <Fade in={!loading} timeout={{ enter: 500 }}>
             <div className="App">
               {process.env.NODE_ENV === "development" ? (
                 <DevAuth setLoading={setLoading}/>

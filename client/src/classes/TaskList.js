@@ -26,17 +26,11 @@ class TaskList {
   }
 
   async setTaskListState() {
-    const stateTasks = ObjArrayCopy(store.getState().tasks);
-
-    if (stateTasks.length > 0){
-      this.next_order = stateTasks.length;
-      return
-    } else {
       const taskObjs = await this.getTasksFromDB()
 
       taskActions.setTasks(taskObjs);
       this.next_order = taskObjs.length;
-    }
+    // }
   }
 
   async getTasksFromDB() {
@@ -57,6 +51,7 @@ class TaskList {
               stateTask.progress_before_last_end;
             taskObj.last_pomodoro_start = stateTask.last_pomodoro_start;
             taskObj.last_pomodoro_end = stateTask.last_pomodoro_end;
+            taskObj.secondsElapsed = stateTask.secondsElapsed
           }
         });
       });

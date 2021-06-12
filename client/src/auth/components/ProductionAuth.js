@@ -12,7 +12,7 @@ export default function ProductionAuth({setLoading}) {
         const isAuthRes = await getService().localService.user.checkAuth()
         const user = store.getState().user
 
-        if (isAuthRes.data.isAuth && store.user_id) {
+        if (isAuthRes.data.isAuth && user._id) {
           setLoading(false)
         } else {
           googleOAuth.launchGoogleAuthFlow(setAuthToken);
