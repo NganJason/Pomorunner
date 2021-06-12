@@ -1,10 +1,16 @@
 {
-  "name": "..",
-  "author": "..",
-  "version": "1.0.1",
+  "name": "PomoRunner",
+  "author": "PomoRunner",
+  "version": "0.0.1",
   "manifest_version": 2,
-  "description": "..",
+  "description": "A simple Pomodoro chrome extension that helps to boost productivity",
   "chrome_url_overrides": {
     "newtab": "index.html"
-  }
+  },
+  "oauth2": {
+    "client_id": "491275267203-eej320jk3agt6bf01ii5pfonbi3seu1h.apps.googleusercontent.com",
+    "scopes": ["openid", "profile", "email"]
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqvcX+rsuXin1kTRTh0F44oufjFtDEJdZFjohU5b1MRatpLJu7jVNotQuFs43Cer/Kca6G5nDyOs6t5GYC7Pqtr259w3JoxeJtFEstsFrC5tMpC/uYyPTynO6vLJxuRwkT38jpCrX2LS0slBoLJgR80YDyMDAgKeqV3GujNTXApu4DdFyvFOfCc6MKvcezg3IElV81/pSv58Jqi2tRn0M1eX+cMXmXnLyUWmLhRMFJSL46pXIJuRnf0skGzPZbJwGKq7JJksVxYz4Iogzcm8asiGXRVi3Pbs9Cjnufw3ivFxe1PPhsUB4Dtw0MvFaLh5Qpe9nwmTcomRiZN68eLTRuwIDAQAB",
+  "permissions": ["identity"]
 }

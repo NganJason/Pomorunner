@@ -4,10 +4,15 @@ import { LocalService } from "./localServices/LocalService.js"
 let devURL = "http://localhost:5000/api";
 let liveURL = "https://pomorunner.herokuapp.com/api";
 
+let baseURL = {
+  'development' : devURL,
+  'production' : liveURL
+}
+
 class Service {
     constructor() {
         const instance = axios.create({
-          baseURL: devURL,
+          baseURL: baseURL[process.env.NODE_ENV],
           withCredentials: true,
         });
 

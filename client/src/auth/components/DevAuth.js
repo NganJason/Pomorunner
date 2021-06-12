@@ -1,10 +1,13 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 
 import { getService } from "../../services/service.js";
-import { loadGoogleScript, onGoogleScriptLoad } from "../googleAuth.js";
+import { googleOAuth } from "../googleAuth.js";
 import { userActions } from "../../redux/User/userActions.js"
+import { store } from "../../redux/store.js"
 
-export default function Auth({ auth, setAuth }) {
+export default function DevAuth() {
+  const [auth, setAuth] = useState();
+
   const loginHandler = useCallback(async () => {
     const googleResponse = await auth.signIn();
 
@@ -13,15 +16,16 @@ export default function Auth({ auth, setAuth }) {
   }, [auth]);
 
   useEffect(() => {
-    window.onGoogleScriptLoad = onGoogleScriptLoad(setAuth);
-    loadGoogleScript();
+    window.onGoogleScriptLoad = googleOAuth.onGoogleScriptLoad(setAuth);
+    googleOAuth.loadGoogleScript();
   }, [setAuth]);
 
   useEffect(() => {
     if (auth) {
       const isSignedIn = auth.isSignedIn.he;
-
-      if (!isSignedIn) {
+      const user = store.getState().user;
+      
+      if (!isSignedIn || !user._id) {
         loginHandler();
       }
     }
