@@ -64,6 +64,16 @@ const getJWTToken = async (req, res, next) => {
     }
 }
 
+const checkAuth = async (req, res, next) => {
+    const token = req.cookies.token;
+
+    if (token) {
+        res.status(200).json({"isAuth": true})
+    } else {
+        res.status(200).json({ isAuth: true });
+    }
+}
+
 export const userView = {
   loginUser,
   logoutUser,
@@ -72,4 +82,5 @@ export const userView = {
   getUserTasks,
   getUser,
   getJWTToken,
+  checkAuth,
 };

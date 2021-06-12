@@ -31,8 +31,6 @@ export default function Task(props) {
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        // if (subtasksVisible)
-        //     return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);

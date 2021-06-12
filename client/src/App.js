@@ -18,6 +18,7 @@ import { store, persistor } from "./redux/store.js";
 dotenv.config();
 
 function App() {
+  const [loading, setLoading] = React.useState(true)
   React.useEffect(() => {
     getService();
     console.log("Init services")
@@ -28,12 +29,12 @@ function App() {
     <div className="default-background">
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <Fade in={true} timeout={{ enter: 1000 }}>
+          <Fade in={!loading} timeout={{ enter: 1000 }}>
             <div className="App">
               {process.env.NODE_ENV === "development" ? (
                 <DevAuth />
               ) : (
-                <ProductionAuth />
+                <ProductionAuth setLoading={setLoading} />
               )}
               <Countdown />
               <Grid container>

@@ -15,9 +15,12 @@ export default function DevAuth() {
     userActions.setUser(userRes.data.user);
   }, [auth]);
 
-  useEffect(() => {
+  useEffect( async () => {
     window.onGoogleScriptLoad = googleOAuth.onGoogleScriptLoad(setAuth);
     googleOAuth.loadGoogleScript();
+    const isAuthRes = await getService().localService.user.checkAuth();
+
+    console.log(isAuthRes);
   }, [setAuth]);
 
   useEffect(() => {

@@ -26,41 +26,58 @@ class TaskList {
   }
 
   async setTaskListState() {
+    const stateTasks = ObjArrayCopy(store.getState().tasks);
+    if (stateTasks.length > 0){
+      this.next_order = stateTasks.length;
+      return
+    } else {
+      const taskObjs = await this.getTasksFromDB()
+
+      taskActions.setTasks(taskObjs);
+      this.next_order = taskObjs.length;
+    }
+  }
+
+  async getTasksFromDB() {
+    const stateTasks = ObjArrayCopy(store.getState().tasks);
     const dbTasks = await getService().localService.user.getTasks(this.user_id);
     const taskObjs = dbTasksToTaskObjs(dbTasks.data);
     taskObjs.sort((a, b) => a.order - b.order);
-
-    const stateTasks = ObjArrayCopy(store.getState().tasks);
     stateTasks.sort((a, b) => a.order - b.order);
 
     if (stateTasks.length > 0) {
-      stateTasks.forEach(stateTask => {
-        taskObjs.forEach(taskObj => {
+      stateTasks.forEach((stateTask) => {
+        taskObjs.forEach((taskObj) => {
           if (taskObj._id == stateTask._id) {
-            taskObj.pomodoro_progress = stateTask.pomodoro_progress
-            taskObj.running = stateTask.running
+            taskObj.pomodoro_progress = stateTask.pomodoro_progress;
+            taskObj.running = stateTask.running;
 
-            taskObj.progress_before_last_end = stateTask.progress_before_last_end
-            taskObj.last_pomodoro_start = stateTask.last_pomodoro_start
-            taskObj.last_pomodoro_end = stateTask.last_pomodoro_end
+            taskObj.progress_before_last_end =
+              stateTask.progress_before_last_end;
+            taskObj.last_pomodoro_start = stateTask.last_pomodoro_start;
+            taskObj.last_pomodoro_end = stateTask.last_pomodoro_end;
           }
-        })
-      })
+        });
+      });
     }
-    
-    taskActions.setTasks(taskObjs);
-    this.next_order = taskObjs.length;
+
+    return taskObjs
   }
 
-  async addTask() { 
-    const res = await getService().localService.task.create(
-      new BaseTask({ user_id: this.user_id, order: this.next_order })
-    );
+  addTask() { 
+    const currentTime = new Date().getTime()
+    const newTaskID = currentTime.toString() + this.user_id
 
+    const newTaskObj = new TaskObj({
+      _id: newTaskID,
+      user_id: this.user_id,
+      order: this.next_order
+    })
+
+    taskActions.addTask(newTaskObj);
     this.next_order++;
 
-    const newTaskObj = new TaskObj(res.data);
-    taskActions.addTask(newTaskObj);
+    const res = getService().localService.task.create(newTaskObj)
   }
 
   updateTask(index, updateObj) {

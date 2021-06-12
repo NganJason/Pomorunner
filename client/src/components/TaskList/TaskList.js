@@ -20,14 +20,16 @@ export default function TaskList() {
     const toDelete = React.useRef(false);
 
     React.useEffect(() => { 
-    initTaskList(user._id);
+        if(user._id) {
+          initTaskList(user._id);
+        }
+          const globalTimer = new GlobalTimer();
+          globalTimer.setTimer();
+        
 
-    const globalTimer = new GlobalTimer()
-    globalTimer.setTimer()
-
-    return () => {
-        clearInterval(globalTimer.timerID)
-    }
+        return () => {
+            clearInterval(globalTimer.timerID)
+        }
     }, [user]);
 
     async function addNewTask() {
