@@ -27,12 +27,14 @@ class TaskList {
 
   async setTaskListState() {
     const stateTasks = ObjArrayCopy(store.getState().tasks);
+    console.log("This is state tasks", stateTasks);
     if (stateTasks.length > 0){
+      console.log("Setting from state tasks")
       this.next_order = stateTasks.length;
       return
     } else {
       const taskObjs = await this.getTasksFromDB()
-
+      console.log("Setting from db");
       taskActions.setTasks(taskObjs);
       this.next_order = taskObjs.length;
     }

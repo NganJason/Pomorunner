@@ -2,6 +2,8 @@ import { SubtaskRepo } from "./subtaskRepo.js";
 import { Task } from "../models/Task.js";
 import { errorResponse } from "../utils/error.js";
 
+import mongoose from "mongoose";
+
 export class TaskRepo {
   constructor() {
     this.subtaskRepo = new SubtaskRepo();
@@ -9,6 +11,9 @@ export class TaskRepo {
 
   async createTask(taskObj) {
     try {
+      if (task._id) {
+        task._id = mongoose.Types.ObjectId(task._id);
+      }
       let task = await Task.create(taskObj);
 
       return task
