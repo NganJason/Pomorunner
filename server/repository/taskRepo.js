@@ -11,8 +11,8 @@ export class TaskRepo {
 
   async createTask(taskObj) {
     try {
-      if (task._id) {
-        task._id = mongoose.Types.ObjectId(task._id);
+      if (taskObj._id) {
+        taskObj._id = mongoose.Types.ObjectId(taskObj._id);
       }
       let task = await Task.create(taskObj);
 
