@@ -12,8 +12,10 @@ export default function ProductionAuth() {
     }, [])
 
     useEffect(async () => {
-      const userRes = await getService().localService.user.login(authToken);
-      userActions.setUser(userRes.data.user);
+      if (authToken) {
+        const userRes = await getService().localService.user.login(authToken);
+        userActions.setUser(userRes.data.user);
+      }
     }, [authToken]);
 
     return <></>
