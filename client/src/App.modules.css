@@ -15,10 +15,14 @@
   background-blend-mode: multiply;
 
   /* To fit the background to whole page without scrolling bars */
-  height: 100%;
+  height: 100vh;
   box-sizing: border-box;
 }
 
+.default-background {
+  background-color: rgb(50, 54, 57);
+  height: 100vh
+}
 /* .App-logo {
   height: 40vmin;
   pointer-events: none;

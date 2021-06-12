@@ -9,6 +9,7 @@ import TaskList from "../src/components/TaskList/TaskList.js";
 import SubTaskList from "../src/components/SubTaskList/SubTaskList.js";
 import Countdown from "../src/components/Countdown/Countdown.js";
 import Grid from "@material-ui/core/Grid";
+import Fade from "@material-ui/core/Fade";
 
 import "./App.modules.css";
 import { getService } from "./services/service.js";
@@ -24,24 +25,31 @@ function App() {
 
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <div className="App">
-        {process.env.NODE_ENV === "development" ? <DevAuth /> : <ProductionAuth />}
-          <Countdown />
-          <Grid container>
-            <Grid item xs={4}>
-            </Grid>
-            <Grid item xs={4}>
-              <TaskList/>
-            </Grid>
-            <Grid item xs={4}>
-              <SubTaskList/>
-            </Grid>
-          </Grid>
-        </div>
-      </PersistGate>
-    </Provider>
+    <div className="default-background">
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <Fade in={true} timeout={{ enter: 1000 }}>
+            <div className="App">
+              {process.env.NODE_ENV === "development" ? (
+                <DevAuth />
+              ) : (
+                <ProductionAuth />
+              )}
+              <Countdown />
+              <Grid container>
+                <Grid item xs={4}></Grid>
+                <Grid item xs={4}>
+                  <TaskList />
+                </Grid>
+                <Grid item xs={4}>
+                  <SubTaskList />
+                </Grid>
+              </Grid>
+            </div>
+          </Fade>
+        </PersistGate>
+      </Provider>
+    </div>
   );
 }
 
