@@ -41,4 +41,10 @@ export class User {
     
     return res;
   }
+
+  async checkAuth() {
+    const res = await this.axios.get("/user/check_auth");
+
+    return res;
+  }
 }
