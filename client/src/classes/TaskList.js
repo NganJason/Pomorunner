@@ -37,12 +37,11 @@ class TaskList {
       stateTasks.forEach(stateTask => {
         taskObjs.forEach(taskObj => {
           if (taskObj._id == stateTask._id) {
+            taskObj.running = stateTask.running;
+            
             taskObj.pomodoro_progress = stateTask.pomodoro_progress
-            taskObj.running = stateTask.running
-
-            taskObj.progress_before_last_end = stateTask.progress_before_last_end
             taskObj.last_pomodoro_start = stateTask.last_pomodoro_start
-            taskObj.last_pomodoro_end = stateTask.last_pomodoro_end
+            taskObj.secondsElapsed = stateTask.secondsElapsed
           }
         })
       })
@@ -109,18 +108,15 @@ class TaskList {
       tasks.forEach((item, ind) => {
         if(index !== ind) {
           item.running = false;
-          item.last_pomodoro_end = new Date().getTime();
         }
       })
 
       if (task.pomodoro_progress >= 100) {
         task.pomodoro_progress = 0
-        task.progress_before_last_end = 0
       }
       
     } else {
-      task.last_pomodoro_end = new Date().getTime()
-      task.progress_before_last_end = calculate_new_pomodoro_progress(task);
+      calculate_new_pomodoro_progress(task);
     }
 
     task.running = isRunning;
