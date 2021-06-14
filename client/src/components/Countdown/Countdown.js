@@ -21,17 +21,19 @@ export default function Countdown(props) {
 
     return (
         <>
-            <Typography
-                variant={`${countdownVal !== -1 ? "h1" : "h3"}`}
-                paragraph={true}
-                classes={{
-                    root: "timer-root",
-                    h1: "timer-h1",
-                    h3: "timer-h1"
-                }}
-            >
-                {countdownVal !== -1 ? `${countdownMins}:${countdownSecs}` : "Pomorunner"}
-            </Typography>
+            <div className={"clock-container"}>
+                <Typography
+                    variant={`${countdownVal !== -1 ? "h1" : "h3"}`}
+                    paragraph={true}
+                    classes={{
+                        root: "timer-root",
+                        h1: "timer-h1",
+                        h3: "timer-h1"
+                    }}
+                >
+                    {countdownVal !== -1 ? `${countdownMins}:${countdownSecs}` : "Pomorunner"}
+                </Typography>
+            </div>
             <LinearProgress
                 variant="determinate"
                 value={progressVal}

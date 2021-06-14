@@ -17,6 +17,7 @@
   /* To fit the background to whole page without scrolling bars */
   height: 100%;
   box-sizing: border-box;
+  overflow: auto;
 }
 
 /* .App-logo {
