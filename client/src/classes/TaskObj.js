@@ -18,10 +18,8 @@ export class TaskObj extends BaseTask{
         super(dbTask)
         this.timerID = 0;
         this.lastEdit = new Date().getTime();
-        this.last_pomodoro_start = new Date().getTime()
-        this.last_pomodoro_end = new Date().getTime()
-        this.progress_before_last_end = 0
         this.subtasksVisible = false;
+        this.last_pomodoro_start = new Date().getTime()
         this.secondsElapsed = 0;
     }
 }
