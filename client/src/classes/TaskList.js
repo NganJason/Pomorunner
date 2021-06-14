@@ -52,15 +52,20 @@ class TaskList {
     this.next_order = taskObjs.length;
   }
 
-  async addTask() { 
-    const res = await getService().localService.task.create(
-      new BaseTask({ user_id: this.user_id, order: this.next_order })
-    );
+  addTask() { 
+    const currentTime = new Date().getTime();
+    const newTaskID = currentTime.toString() + this.user_id;
 
+    const newTaskObj = new TaskObj({
+      _id: newTaskID.slice(0, 24),
+      user_id: this.user_id,
+      order: this.next_order,
+    });
+
+    taskActions.addTask(newTaskObj);
     this.next_order++;
 
-    const newTaskObj = new TaskObj(res.data);
-    taskActions.addTask(newTaskObj);
+    getService().localService.task.create(newTaskObj);
   }
 
   updateTask(index, updateObj) {
