@@ -55,8 +55,8 @@ export class TaskRepo {
     }
   }
 
-  async findUserTasks(user_id, datestring) {
-    return await Task.find({user_id, datestring}).populate("subtasks")
+  async findUserTasks(user_id, task_date) {
+    return await Task.find({ user_id, task_date }).populate("subtasks");
   }
 
   async updateTasksOrder(reorderedTasks) {

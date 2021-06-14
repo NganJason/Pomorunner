@@ -31,14 +31,14 @@ export class User {
     return res;
   }
 
-  async getTasks(user_id, datestring = new Date().toISOString().slice(0, 10)) {
+  async getTasks(user_id, task_date = Date.parse(new Date().toDateString())) {
     const params = {
       user_id: user_id,
-      datestring: datestring,
+      task_date: task_date,
     };
 
     const res = await this.axios.get("/user/get_tasks", { params });
-    
+
     return res;
   }
 

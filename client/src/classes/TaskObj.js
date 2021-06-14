@@ -7,7 +7,7 @@ export class BaseTask {
         this.pomodoro_progress = dbTask.pomodoro_progress || 0
         this.checked = dbTask.checked || false
         this.running = dbTask.running || false;
-        this.datestring = dbTask.datestring || new Date().toISOString().slice(0, 10)
+        this.task_date = dbTask.task_date || Date.parse(new Date().toDateString())
         this.user_id = dbTask.user_id
         this.subtasks = dbTask.subtasks || []
     }
