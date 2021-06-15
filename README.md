@@ -4,7 +4,7 @@ Pomorunner is an interactive **Chrome Extension** that utilizes the well-known P
 
 #### Background
 * The Pomodoro technique breaks down your work into intervals, usually 45 minutes and separated by short breaks.
-* It you to timebox your time efficiently and be consciously aware of the tasks that you are working on throughout the day.
+* It helps you to timebox your time efficiently and be consciously aware of the tasks that you are working on throughout the day.
 * Its goal is to reduce any form of interruption to your focus and flow.
 
 #### Features
