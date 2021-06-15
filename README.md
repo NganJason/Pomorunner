@@ -16,6 +16,7 @@ Pomorunner is an interactive **Chrome Extension** that utilizes the well-known P
 * Users are able to start a Pomodoro timer for each planned tasks
 * Users are able to see their info and progress synchronised across multiple different tabs
 * Users are able to view random background photos and quotes every day
+* User information and progress will be saved in a backend database
 
 #### Tech Stack
 * Frontend - React, SCSS
