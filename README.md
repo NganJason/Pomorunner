@@ -29,6 +29,7 @@ Pomorunner is an interactive **Chrome Extension** that utilizes the well-known P
 * nganjason97@gmail.com
 
 ## Demo Videos ##
-<details>
-  <summary>User Navigation Flow</summary>
-</details>
+<video src="https://user-images.githubusercontent.com/57489399/121977721-31053200-cdb9-11eb-948e-8efab81c95e6.mp4" name="User Navigation Flow">
+
+
+
