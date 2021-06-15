@@ -8,15 +8,15 @@ Pomorunner is an interactive **Chrome Extension** that utilizes the well-known P
 * Its goal is to reduce any form of interruption to your focus and flow.
 
 #### Features
-* Users are able to access Pomorunner in an empty Chrome tab
-* Users are able to login to their account using Google OAuth
-* Users are able to add tasks to their tasklist
-* Users are able to add subtasks to a specific task
-* Users are able to drag and drop the tasks and subtasks
-* Users are able to start a Pomodoro timer for each planned tasks
-* Users are able to see their info and progress synchronised across multiple different tabs
-* Users are able to view random background photos and quotes every day
-* User information and progress will be saved in a backend database
+* Users are able to access Pomorunner in an empty Chrome tab.
+* Users are able to login to their account using Google OAuth.
+* Users are able to add tasks to their tasklist.
+* Users are able to add subtasks to a specific task.
+* Users are able to drag and drop the tasks and subtasks.
+* Users are able to start a Pomodoro timer for each planned tasks.
+* Users are able to see their info and progress synchronised across multiple different tabs.
+* Users are able to view random background photos and quotes every day.
+* User information and progress will be saved in a backend database.
 
 #### Tech Stack
 * Frontend - React, SCSS
