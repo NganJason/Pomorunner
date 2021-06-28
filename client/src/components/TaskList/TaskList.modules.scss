@@ -1,9 +1,13 @@
 .main-paper {
+  display: flex;
+  flex-direction: column;
   margin: auto;
+  margin-top: 2rem;
   padding: 2%;
   padding-bottom: 0;
   align-content: center;
   width: 87%;
+  max-height: 85%;
   overflow-y: hide;
   position: relative;
 }

@@ -30,12 +30,12 @@ function App() {
         {process.env.NODE_ENV === "development" ? <DevAuth /> : <ProductionAuth />}
           <Countdown />
           <Grid container>
-            <Grid item xs={4}>
+            <Grid item xs={1} sm={2} md={3} lg={4}>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={10} sm={8} md={6} lg={4}>
               <TaskList/>
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={1} sm={2} md={3} lg={4}>
               <SubTaskList/>
             </Grid>
           </Grid>
