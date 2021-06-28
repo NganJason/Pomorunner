@@ -12,5 +12,6 @@ userRouter.get("/delete", auth.isAuthenticated, auth.isAuthorized, userView.dele
 userRouter.get("/get_tasks", auth.isAuthenticated, auth.isAuthorized, userView.getUserTasks);
 userRouter.get("/get", userView.getUser);
 userRouter.get("/get_jwt_token", userView.getJWTToken)
+userRouter.get("/check_auth", userView.checkAuth)
 
 export { userRouter };

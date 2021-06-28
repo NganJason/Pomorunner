@@ -7,7 +7,7 @@ export class BaseTask {
         this.pomodoro_progress = dbTask.pomodoro_progress || 0
         this.checked = dbTask.checked || false
         this.running = dbTask.running || false;
-        this.datestring = dbTask.datestring || new Date().toISOString().slice(0, 10)
+        this.task_date = dbTask.task_date || Date.parse(new Date().toDateString())
         this.user_id = dbTask.user_id
         this.subtasks = dbTask.subtasks || []
     }
@@ -18,10 +18,8 @@ export class TaskObj extends BaseTask{
         super(dbTask)
         this.timerID = 0;
         this.lastEdit = new Date().getTime();
-        this.last_pomodoro_start = new Date().getTime()
-        this.last_pomodoro_end = new Date().getTime()
-        this.progress_before_last_end = 0
         this.subtasksVisible = false;
+        this.last_pomodoro_start = new Date().getTime()
         this.secondsElapsed = 0;
     }
 }

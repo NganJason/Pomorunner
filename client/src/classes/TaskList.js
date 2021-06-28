@@ -37,12 +37,11 @@ class TaskList {
       stateTasks.forEach(stateTask => {
         taskObjs.forEach(taskObj => {
           if (taskObj._id == stateTask._id) {
+            taskObj.running = stateTask.running;
+            
             taskObj.pomodoro_progress = stateTask.pomodoro_progress
-            taskObj.running = stateTask.running
-
-            taskObj.progress_before_last_end = stateTask.progress_before_last_end
             taskObj.last_pomodoro_start = stateTask.last_pomodoro_start
-            taskObj.last_pomodoro_end = stateTask.last_pomodoro_end
+            taskObj.secondsElapsed = stateTask.secondsElapsed
           }
         })
       })
@@ -52,18 +51,23 @@ class TaskList {
     this.next_order = taskObjs.length;
   }
 
-  async addTask() { 
-    const res = await getService().localService.task.create(
-      new BaseTask({ user_id: this.user_id, order: this.next_order })
-    );
+  addTask() { 
+    const currentTime = new Date().getTime();
+    const newTaskID = currentTime.toString() + this.user_id;
 
+    const newTaskObj = new TaskObj({
+      _id: newTaskID.slice(0, 24),
+      user_id: this.user_id,
+      order: this.next_order,
+    });
+
+    taskActions.addTask(newTaskObj);
     this.next_order++;
 
-    const newTaskObj = new TaskObj(res.data);
-    taskActions.addTask(newTaskObj);
+    getService().localService.task.create(newTaskObj);
   }
 
-  async updateTask(index, updateObj) {
+  updateTask(index, updateObj) {
     const tasks = ObjArrayCopy(store.getState().tasks);
     const task = tasks[index];
 
@@ -74,28 +78,29 @@ class TaskList {
     taskActions.setTasks(tasks);
 
     updateObj.task_id = task._id;
-    await getService().localService.task.update(updateObj);
+    getService().localService.task.update(updateObj);
   }
 
-  async deleteTask(index) {
+  deleteTask(index) {
     const tasks = ObjArrayCopy(store.getState().tasks)
 
     const removedTask = tasks.splice(index, 1)[0]
     
-    await getService().localService.task.delete(removedTask._id)
-
-    tasks.forEach( async (task, index) => {
+    tasks.forEach((task, index) => {
         if(task.order !== index) {
             task.order = index
-
-            await getService().localService.task.update({
-                task_id: task._id,
-                order: index,
-            });
         }
     })
-
     taskActions.setTasks(tasks);
+
+    getService().localService.task.delete(removedTask._id);
+
+    tasks.forEach((task, index) => {
+      getService().localService.task.update({
+        task_id: task._id,
+        order: index,
+      });
+    })
   }
 
   updateProgressRunning(index, isRunning) {
@@ -109,18 +114,15 @@ class TaskList {
       tasks.forEach((item, ind) => {
         if(index !== ind) {
           item.running = false;
-          item.last_pomodoro_end = new Date().getTime();
         }
       })
 
       if (task.pomodoro_progress >= 100) {
         task.pomodoro_progress = 0
-        task.progress_before_last_end = 0
       }
       
     } else {
-      task.last_pomodoro_end = new Date().getTime()
-      task.progress_before_last_end = calculate_new_pomodoro_progress(task);
+      calculate_new_pomodoro_progress(task);
     }
 
     task.running = isRunning;
@@ -151,7 +153,7 @@ class TaskList {
     taskActions.setTasks(tasks);
   }
 
-  async updatePomodoroProgress(index) {
+  updatePomodoroProgress(index) {
     const tasks = ObjArrayCopy(store.getState().tasks)
     const task = tasks[index]
 
@@ -165,7 +167,7 @@ class TaskList {
     taskActions.setTasks(tasks);
   }
 
-  async updateTaskOrder(source_index, destination_index) {
+  updateTaskOrder(source_index, destination_index) {
       let tasks = ObjArrayCopy(store.getState().tasks);
       const updateObj = {
           task_id : tasks[source_index]._id,
@@ -175,7 +177,7 @@ class TaskList {
       tasks = swapContent(tasks, source_index, destination_index);
       taskActions.setTasks(tasks);
       
-      await getService().localService.task.update(updateObj)
+      getService().localService.task.update(updateObj)
   }
 }
 

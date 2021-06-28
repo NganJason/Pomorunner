@@ -30,9 +30,9 @@ const taskSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    datestring: {
-      type: String,
-      default: new Date().toISOString().slice(0, 10),
+    task_date: {
+      type: Number,
+      default: Date.parse(new Date().toDateString()),
     },
     user_id: {
       type: Schema.Types.ObjectId,
@@ -68,7 +68,7 @@ taskSchema.methods.removeSubtask = async function (subtask_id) {
 taskSchema.methods.getSelfAndSiblingObjs = async function () {
   let selfAndSiblingTasks = await this.model("Task").find({
     user_id: this.user_id,
-    datestring: this.datestring,
+    task_date: this.task_date,
   });
 
   return selfAndSiblingTasks;

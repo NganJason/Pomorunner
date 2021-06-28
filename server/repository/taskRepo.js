@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 import { SubtaskRepo } from "./subtaskRepo.js";
 import { Task } from "../models/Task.js";
 import { errorResponse } from "../utils/error.js";
@@ -9,6 +11,10 @@ export class TaskRepo {
 
   async createTask(taskObj) {
     try {
+      if (taskObj._id) {
+        taskObj._id = mongoose.Types.ObjectId(taskObj._id);
+      }
+      
       let task = await Task.create(taskObj);
 
       return task
@@ -49,8 +55,8 @@ export class TaskRepo {
     }
   }
 
-  async findUserTasks(user_id, datestring) {
-    return await Task.find({user_id, datestring}).populate("subtasks")
+  async findUserTasks(user_id, task_date) {
+    return await Task.find({ user_id, task_date }).populate("subtasks");
   }
 
   async updateTasksOrder(reorderedTasks) {
