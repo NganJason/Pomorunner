@@ -14,6 +14,7 @@ import Grid from "@material-ui/core/Grid";
 import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
+import { GlobalTimer } from "./classes/GlobalTimer.js";
 
 dotenv.config();
 
@@ -23,6 +24,14 @@ function App() {
   React.useEffect(() => {
     getService();
     console.log("Init services")
+
+    const globalTimer = new GlobalTimer();
+    globalTimer.setTimer();
+    console.log("Init global timer")
+
+    return () => {
+      clearInterval(globalTimer.timerID);
+    };
   }, []);
 
   return (

@@ -11,7 +11,7 @@ export default function DevAuth({setLoading}) {
   const loginHandler = useCallback(async () => {
     const googleResponse = await auth.signIn();
 
-    const userRes = await getService().localService.user.login(googleResponse.qc.id_token)
+    const userRes = await getService().localService.user.login(googleResponse.mc.id_token)
     userActions.setUser(userRes.data.user);
   }, [auth]);
 
