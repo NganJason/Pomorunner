@@ -36,7 +36,7 @@ export default function Countdown(props) {
 
     return (
         <>
-            <Fade in={countdownVal !== -1} timeout={{enter: 1000, exit: 1000}} style={{display: countdownVal === -1 && "none"}}>
+            <Fade in={countdownVal !== -1} timeout={{enter: 2000, exit: 2000}} style={{display: countdownVal === -1 && "none"}}>
                 <Typography
                     variant={"h3"}
                     paragraph={true}
@@ -49,7 +49,7 @@ export default function Countdown(props) {
                     {`${countdownMins}:${countdownSecs}`}
                 </Typography>
             </Fade>
-            <Fade in={countdownVal === -1} timeout={{enter: 1000, exit: 1000}} style={{display: countdownVal !== -1 && "none"}}>
+            <Fade in={countdownVal === -1} timeout={{enter: 2000, exit: 2000}} style={{display: countdownVal !== -1 && "none"}}>
                 <Typography
                     variant={"h3"}
                     paragraph={true}
