@@ -1,60 +1,28 @@
 .App {
   padding: 1%;
-
-  /* Set background image */
-  background-image: url("https://images.pexels.com/photos/346529/pexels-photo-346529.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260"),
-    linear-gradient(0.5turn, rgba(0, 0, 0, 0.3), 30%, rgb(146, 146, 146, 1.0));
-  background-image: url("https://www.gstatic.com/prettyearth/assets/full/2398.jpg"),
-    linear-gradient(0.5turn, rgba(0, 0, 0, 0.3), 30%, rgb(146, 146, 146, 1.0));
-  background-image: url("https://www.gstatic.com/prettyearth/assets/full/14599.jpg"),
-    linear-gradient(0.5turn, rgba(0, 0, 0, 0.3), 30%, rgb(146, 146, 146, 1.0));
-  /* background-image: url("https://www.gstatic.com/prettyearth/assets/full/1812.jpg"),
-    linear-gradient(0.5turn, rgba(0, 0, 0, 0.3), 30%, rgb(146, 146, 146, 1.0)); */
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-blend-mode: multiply;
-
-  /* To fit the background to whole page without scrolling bars */
+  position: absolute;
+  z-index: 3;
+  width: 100vw;
   height: 100vh;
-  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .default-background {
   background-color: rgb(50, 54, 57);
-  height: 100vh
+  height: 100%;
+  width:100vw;
+  position: relative;
+  z-index: -3;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
-/* .App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.background-img {
+  position: absolute;
+  width: 100vw;
+  height: 100%;
+  z-index: -1;
+  opacity: 80%;
+  object-fit: cover;
 }
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */

@@ -11,6 +11,8 @@ body, #root {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  position: absolute;
+  z-index: -5;
 }
 
 code {
