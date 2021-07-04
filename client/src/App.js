@@ -21,6 +21,7 @@ dotenv.config();
 
 function App() {
   const [loading, setLoading] = React.useState(true)
+  const [img, setImg] = React.useState("")
   const {width, height} = useWindowDimensions();
 
   React.useEffect(() => {
@@ -28,14 +29,19 @@ function App() {
     console.log("Init services")
   }, []);
 
+  React.useEffect(() => {
+    const getImg = async() => {
+      let image = await imgUtils.getBackgroundImg(width, height);
+      setImg(image);
+    }
+
+    getImg()
+  })
+
   return (
     <div className="default-background">
-      <Fade in={!loading} timeout={{enter: 3000, exit: 1000}}>
-        <img
-          src={imgUtils.getBackgroundImg(width, height)}
-          alt="background"
-          className="background-img"
-        />
+      <Fade in={!loading} timeout={{ enter: 3000, exit: 1000 }}>
+        <img src={img} alt="background" className="background-img" />
       </Fade>
       <div className="main-content">
         <Provider store={store}>
