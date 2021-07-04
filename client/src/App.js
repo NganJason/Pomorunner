@@ -10,19 +10,28 @@ import TaskList from "../src/components/TaskList/TaskList.js";
 import SubTaskList from "../src/components/SubTaskList/SubTaskList.js";
 import Countdown from "../src/components/Countdown/Countdown.js";
 import Grid from "@material-ui/core/Grid";
+import Quote from "./components/Quote/Quote.js"
 
 import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
+import {quotesUtils} from "./utils/quotesUtils.js"
 
 dotenv.config();
 
 function App() {
   const [loading, setLoading] = React.useState(true)
+  const [quote, setQuote] = React.useState({text:"", author: ""})
 
   React.useEffect(() => {
     getService();
     console.log("Init services")
+    
+    const setRandomQuote = async () => {
+      setQuote(await(quotesUtils.getRandomQuote()))
+    }
+
+    setRandomQuote()
   }, []);
 
   return (
@@ -46,6 +55,9 @@ function App() {
                   <SubTaskList />
                 </Grid>
               </Grid>
+              <Fade in={!loading} timeout={{enter: 3000, exit: 1000}}>
+                <Quote text={quote.text}/>
+              </Fade>
             </div>
           </Fade>
         </PersistGate>
