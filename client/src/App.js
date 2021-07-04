@@ -21,7 +21,7 @@ dotenv.config();
 
 function App() {
   const [loading, setLoading] = React.useState(true)
-  const [quote, setQuote] = React.useState({text:"", author: ""})
+  const [quote, setQuote] = React.useState("")
 
   React.useEffect(() => {
     getService();
@@ -56,7 +56,7 @@ function App() {
                 </Grid>
               </Grid>
               <Fade in={!loading} timeout={{enter: 3000, exit: 1000}}>
-                <Quote text={quote.text}/>
+                <Quote text={quote}/>
               </Fade>
             </div>
           </Fade>
