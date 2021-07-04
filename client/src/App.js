@@ -14,11 +14,14 @@ import Grid from "@material-ui/core/Grid";
 import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
+import {useWindowDimensions} from "./hooks/useWindowDimensions.js"
+import {imgUtils} from "./utils/imgUtils.js"
 
 dotenv.config();
 
 function App() {
   const [loading, setLoading] = React.useState(true)
+  const {width, height} = useWindowDimensions();
 
   React.useEffect(() => {
     getService();
@@ -27,29 +30,38 @@ function App() {
 
   return (
     <div className="default-background">
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <Fade in={!loading} timeout={{ enter: 500 }}>
-            <div className="App">
-              {process.env.NODE_ENV === "development" ? (
-                <DevAuth setLoading={setLoading} />
-              ) : (
-                <ProductionAuth setLoading={setLoading} />
-              )}
-              <Countdown />
-              <Grid container>
-                <Grid item xs={4}></Grid>
-                <Grid item xs={4}>
-                  <TaskList />
+      <Fade in={!loading} timeout={{enter: 3000, exit: 1000}}>
+        <img
+          src={imgUtils.getBackgroundImg(width, height)}
+          alt="background"
+          className="background-img"
+        />
+      </Fade>
+      <div className="main-content">
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <Fade in={!loading} timeout={{ enter: 500 }}>
+              <div className="App">
+                {process.env.NODE_ENV === "development" ? (
+                  <DevAuth setLoading={setLoading} />
+                ) : (
+                  <ProductionAuth setLoading={setLoading} />
+                )}
+                <Countdown />
+                <Grid container>
+                  <Grid item xs={4}></Grid>
+                  <Grid item xs={4}>
+                    <TaskList />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <SubTaskList />
+                  </Grid>
                 </Grid>
-                <Grid item xs={4}>
-                  <SubTaskList />
-                </Grid>
-              </Grid>
-            </div>
-          </Fade>
-        </PersistGate>
-      </Provider>
+              </div>
+            </Fade>
+          </PersistGate>
+        </Provider>
+      </div>
     </div>
   );
 }
