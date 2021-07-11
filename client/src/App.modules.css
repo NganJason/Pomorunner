@@ -15,6 +15,7 @@
   background-blend-mode: multiply;
 
   /* To fit the background to whole page without scrolling bars */
+  overflow: auto;
   height: 100vh;
   box-sizing: border-box;
 }

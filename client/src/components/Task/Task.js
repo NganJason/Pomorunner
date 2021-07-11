@@ -174,7 +174,7 @@ export default function Task(props) {
                     </Grid>
                 </Fade>
                 <Fade in={optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container className={"options-div"} justify="space-evenly" wrap="nowrap" alignContent="center" alignItems="center">
+                    <Grid container className={"options-div"} wrap="nowrap" alignContent="center" alignItems="center">
                         <Grid item>
                             <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
                         </Grid>
