@@ -39,32 +39,6 @@ export default function Task(props) {
         setHandleVisible(false);
     }
 
-    // function onOptionsButtonClick(e) {
-    //     switch (e.currentTarget.id) {
-    //         case "task-delete":
-    //             getTaskList().deleteTask(index)
-    //             setOptionsVisible(false);
-    //             break;
-
-    //         case "task-cancel":
-    //             setOptionsVisible(false);
-    //             break;
-
-    //         case "task-subtasks":
-    //             getTaskList().setSubtasksVisibility(index, true);
-    //             setOptionsVisible(false);
-    //             break;
-
-    //         case "task-reset":
-    //             getTaskList().resetTask(index);
-    //             setOptionsVisible(false);
-    //             break;
-
-    //         default:
-    //             break;
-    //     }
-    // }
-
     React.useEffect(() => {
         if (dragging) {
             setOptionsVisible(false);
@@ -80,7 +54,11 @@ export default function Task(props) {
         setTemporaryTask({ content: e.target.value, lastEdit: new Date().getTime() });
     }, []);
 
-    const onMouseEnter = React.useCallback(() => {
+    const onMouseOver = React.useCallback((e) => {
+        //Ignore if mouse over target is "div" and "div.MuiPopover-root". Otherwise this callback is triggered when right click context is dismissed
+        if(e.target.className === "" || e.target.className === "MuiPopover-root")
+            return;
+
         if (optionsVisible && handleVisible)
             setHandleVisible(false);
 
@@ -119,7 +97,7 @@ export default function Task(props) {
                 className={`task-paper ${subtasksVisible ? "selected-task-paper" : "null"}`}
                 elevation={0}
                 onContextMenu={onContextMenu}
-                onMouseOver={onMouseEnter}
+                onMouseOver={onMouseOver}
                 onMouseLeave={onMouseLeave}
             >
                 <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>

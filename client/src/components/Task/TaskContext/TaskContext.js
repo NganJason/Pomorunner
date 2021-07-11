@@ -68,7 +68,7 @@ export default function TaskContext(props) {
     });
 
     return (
-        <div className={"popover-div"}>
+        <>
             <Popover
                 open={optionsVisible}
                 classes={{
@@ -93,6 +93,6 @@ export default function TaskContext(props) {
                     <Button id="task-cancel" className={"option-buttons"} onClick={onOptionsButtonClick}>Cancel</Button>
                 </div>
             </Popover>
-        </div>
+        </>
     )
 }
