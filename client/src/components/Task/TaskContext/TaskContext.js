@@ -75,7 +75,7 @@ export default function TaskContext(props) {
                     paper: "popover-paper"
                 }}
                 anchorReference="anchorPosition"
-                anchorPosition={{ top: mousePos.x, left: mousePos.y }}
+                anchorPosition={{ top: mousePos.x + 1, left: mousePos.y + 1}} //Offset to prevent easy misclick on first item in menu
                 anchorOrigin={{
                     vertical: 'top',
                     horizontal: 'left',
