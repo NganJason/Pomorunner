@@ -29,6 +29,10 @@ export default function TaskList() {
       setTimeout(() => {
         const elem = document.getElementById("task-list-paper");
         elem.scrollTop = elem.scrollHeight;
+
+        //Focus last item
+        const elems = document.getElementsByClassName("task-input-outlined-root");
+        elems[elems.length - 1].firstChild.focus();
       }, 0);
 
       getTaskList().addTask();
