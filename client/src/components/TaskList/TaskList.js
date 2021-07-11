@@ -12,6 +12,7 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
+import { MouseDown } from "../../classes/MouseEvents.js";
 
 import { initTaskList, getTaskList } from "../../classes/TaskList.js"
 
@@ -42,17 +43,13 @@ export default function TaskList() {
     }
 
     const dragEndHandler = (result) => {
-        if (!result.destination || result.destination.index === result.source.index || !result) {
-            console.log("Invalid", result, toDelete.current);
-            // if (result.source.index !== undefined && toDelete.current) {
-            //     //Delete content
-            //     setContents((prevContents) => {
-            //         const newContents = ObjArrayCopy(prevContents);
-            //         newContents.splice(result.source.index, 1);
+        if(toDelete.current)
+        {
+            getTaskList().deleteTask(result.source.index)
+            toDelete.current = false;
+        }
 
-            //         return newContents;
-            //     });
-            // }
+        if (!result.destination || result.destination.index === result.source.index || !result) {
             setDragging(false);
             return;
         }
@@ -62,7 +59,7 @@ export default function TaskList() {
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
             setDragging(false);
-        }, 100);
+        }, 0);
     };
 
     function dragStartHandler(e) {
@@ -72,13 +69,13 @@ export default function TaskList() {
     }
 
     function deleteEnter() {
-        toDelete.current = true;
-        console.log("Entered");
+        if(dragging && MouseDown)
+            toDelete.current = true;
     }
 
     function deleteLeave() {
-        toDelete.current = false;
-        console.log("Leaved");
+        if(dragging && MouseDown)
+            toDelete.current = false;
     }
 
     return (

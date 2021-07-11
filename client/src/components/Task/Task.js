@@ -32,8 +32,6 @@ export default function Task(props) {
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        // if (subtasksVisible)
-        //     return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
@@ -150,7 +148,7 @@ export default function Task(props) {
                         />
                     </Grid>
                 </Grid>
-                <TaskContext optionsVisible={optionsVisible} setOptionsVisible={setOptionsVisible} index={index} />
+                <TaskContext optionsVisible={optionsVisible} setOptionsVisible={setOptionsVisible} index={index}/>
                 <div className="drag-handle-div">
                     <Fade in={handleVisible}>
                         <DragHandleIcon
