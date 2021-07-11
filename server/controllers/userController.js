@@ -1,6 +1,6 @@
-import {OAuth2Client} from "google-auth-library"
+import * as OAuth2 from "google-auth-library"
 
-const client = new OAuth2Client(
+const client = new OAuth2.default.OAuth2Client(
   process.env.OAUTH_CLIENT_ID
 );
 
