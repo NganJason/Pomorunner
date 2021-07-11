@@ -1,9 +1,10 @@
-.task-paper {
+.subtasks-paper {
   margin: 10px auto;
   padding-top: 0.1rem;
   padding-left: 0.1rem;
   padding-right: 0.1rem;
   position: relative;
+  overflow: auto;
 }
 
 .task-container {

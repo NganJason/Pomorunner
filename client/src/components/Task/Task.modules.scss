@@ -14,6 +14,7 @@
   margin: auto;
   width: fit-content;
   padding: 5px;
+  padding-right: 1rem !important;
   height: 100%;
 }
 
@@ -25,8 +26,14 @@
 .options-div {
   height: 100%;
   position: absolute;
-  top: 0;
-  left: 0;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  overflow: auto;
+}
+
+.option-buttons {
+  margin: 0 0.1rem !important;
 }
 
 div.text-field-root .text-field-border{

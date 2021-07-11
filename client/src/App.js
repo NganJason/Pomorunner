@@ -14,6 +14,7 @@ import Grid from "@material-ui/core/Grid";
 import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
+import { GlobalTimer } from "./classes/GlobalTimer.js";
 
 dotenv.config();
 
@@ -23,6 +24,14 @@ function App() {
   React.useEffect(() => {
     getService();
     console.log("Init services")
+
+    const globalTimer = new GlobalTimer();
+    globalTimer.setTimer();
+    console.log("Init global timer")
+
+    return () => {
+      clearInterval(globalTimer.timerID);
+    };
   }, []);
 
   return (
@@ -38,13 +47,14 @@ function App() {
               )}
               <Countdown />
               <Grid container>
-                <Grid item xs={4}></Grid>
-                <Grid item xs={4}>
-                  <TaskList />
-                </Grid>
-                <Grid item xs={4}>
-                  <SubTaskList />
-                </Grid>
+                <Grid item xs={1} sm={2} md={3} lg={4}>
+            </Grid>
+            <Grid item xs={10} sm={8} md={6} lg={4}>
+              <TaskList/>
+            </Grid>
+            <Grid item xs={1} sm={2} md={3} lg={4}>
+              <SubTaskList/>
+            </Grid>
               </Grid>
             </div>
           </Fade>

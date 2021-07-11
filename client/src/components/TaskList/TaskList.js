@@ -11,7 +11,6 @@ import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
 
 import { initTaskList, getTaskList } from "../../classes/TaskList.js"
-import { GlobalTimer } from "../../classes/GlobalTimer.js"
 
 export default function TaskList() {
     const tasks = useSelector((state) => state.tasks);
@@ -22,13 +21,6 @@ export default function TaskList() {
     React.useEffect(() => { 
         if(user._id) {
           initTaskList(user._id);
-        }
-        
-        const globalTimer = new GlobalTimer()
-        globalTimer.setTimer()
-
-        return () => {
-            clearInterval(globalTimer.timerID)
         }
     }, [user]);
 
