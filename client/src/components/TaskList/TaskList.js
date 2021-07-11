@@ -2,9 +2,12 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import "./TaskList.modules.scss"
-import Button from "@material-ui/core/Button";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
 import Fade from "@material-ui/core/Fade";
+import Zoom from "@material-ui/core/Zoom";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
@@ -18,24 +21,24 @@ export default function TaskList() {
     const [dragging, setDragging] = React.useState(false);
     const toDelete = React.useRef(false);
 
-    React.useEffect(() => { 
-        if(user._id) {
-          initTaskList(user._id);
+    React.useEffect(() => {
+        if (user._id) {
+            initTaskList(user._id);
         }
     }, [user]);
 
     async function addNewTask() {
-      //Scroll to end of task list
-      setTimeout(() => {
-        const elem = document.getElementById("task-list-paper");
-        elem.scrollTop = elem.scrollHeight;
+        //Scroll to end of task list
+        setTimeout(() => {
+            const elem = document.getElementById("task-list-paper");
+            elem.scrollTop = elem.scrollHeight;
 
-        //Focus last item
-        const elems = document.getElementsByClassName("task-input-outlined-root");
-        elems[elems.length - 1].firstChild.focus();
-      }, 0);
+            //Focus last item
+            const elems = document.getElementsByClassName("task-input-outlined-root");
+            elems[elems.length - 1].firstChild.focus();
+        }, 0);
 
-      getTaskList().addTask();
+        getTaskList().addTask();
     }
 
     const dragEndHandler = (result) => {
@@ -67,7 +70,7 @@ export default function TaskList() {
         setDragging(true);
         document.activeElement.blur();
     }
-    
+
     function deleteEnter() {
         toDelete.current = true;
         console.log("Entered");
@@ -108,12 +111,17 @@ export default function TaskList() {
                     }}
                 </Droppable>
                 <div className={"add-button"}>
-                    <Fade in={!dragging} timeout={{ exit: 100 }}>
-                        <Button variant="contained" disableElevation={false} classes={{ root: "add-button-root" }} onClick={addNewTask}>Add task</Button>
-                    </Fade>
-                    <Fade in={dragging} timeout={{ exit: 100 }}>
-                        <Button variant="contained" disableElevation={false} classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>Delete</Button>
-                    </Fade>
+                    <Zoom in={!dragging} timeout={{ enter: 100, exit: 150 }}>
+
+                        <Fab size="medium" classes={{ root: "add-button-root" }} onClick={addNewTask}>
+                            <AddIcon />
+                        </Fab>
+                    </Zoom>
+                    <Zoom in={dragging} timeout={{ enter: 100, exit: 150 }}>
+                        <Fab size="medium" classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>
+                            <DeleteIcon />
+                        </Fab>
+                    </Zoom>
                 </div>
             </Paper>
         </DragDropContext>
