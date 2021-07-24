@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 
 import "./TaskList.modules.scss"
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import Fade from "@material-ui/core/Fade";
+import { clockUtils } from "../../utils/clockUtils";
 import Zoom from "@material-ui/core/Zoom";
 import Fab from "@material-ui/core/Fab";
 import AddIcon from '@material-ui/icons/Add';
@@ -16,11 +16,13 @@ import { MouseDown } from "../../classes/MouseEvents.js";
 
 import { initTaskList, getTaskList } from "../../classes/TaskList.js"
 
-export default function TaskList() {
+export default function TaskList(props) {
     const tasks = useSelector((state) => state.tasks);
     const user = useSelector((state) => state.user);
     const [dragging, setDragging] = React.useState(false);
+    const [mouseInList, setMouseInList] = React.useState(false);
     const toDelete = React.useRef(false);
+    const { side } = props;
 
     React.useEffect(() => {
         if (user._id) {
@@ -43,8 +45,7 @@ export default function TaskList() {
     }
 
     const dragEndHandler = (result) => {
-        if(toDelete.current)
-        {
+        if (toDelete.current) {
             getTaskList().deleteTask(result.source.index)
             toDelete.current = false;
         }
@@ -69,19 +70,37 @@ export default function TaskList() {
     }
 
     function deleteEnter() {
-        if(dragging && MouseDown)
+        if (dragging && MouseDown)
             toDelete.current = true;
     }
 
     function deleteLeave() {
-        if(dragging && MouseDown)
+        if (dragging && MouseDown)
             toDelete.current = false;
+    }
+
+    function onTaskListEnter() {
+        setMouseInList(true);
+    }
+
+    function onTaskListLeave() {
+        setMouseInList(false);
     }
 
     return (
         <DragDropContext onDragEnd={dragEndHandler} onDragStart={dragStartHandler}>
-            <Paper className={"main-paper"} classes={{ root: "main-paper-root" }} elevation={0}>
-                <Typography variant="h6">TaskList</Typography>
+            <Paper
+                className={"main-paper"}
+                classes={{ root: `main-paper-root ${side !== undefined ? side + "-task-list" : ""}` }}
+                elevation={0}
+                onMouseEnter={onTaskListEnter}
+                onMouseLeave={onTaskListLeave}
+            >
+                <div className={"day-date-div"}>
+                    <Typography variant="h5">Monday</Typography>
+                    <Typography variant="p">{clockUtils.getDateMonthYear()}</Typography>
+                    <br />
+                </div>
                 <Droppable droppableId="task-list">
                     {(provided) => {
                         return (
@@ -107,19 +126,21 @@ export default function TaskList() {
                         )
                     }}
                 </Droppable>
-                <div className={"add-button"}>
-                    <Zoom in={!dragging} timeout={{ enter: 100, exit: 150 }}>
+                <Zoom in={mouseInList}>
+                    <div className={"add-button"}>
+                        <Zoom in={!dragging} timeout={{ enter: 100, exit: 150 }}>
 
-                        <Fab size="medium" classes={{ root: "add-button-root" }} onClick={addNewTask}>
-                            <AddIcon />
-                        </Fab>
-                    </Zoom>
-                    <Zoom in={dragging} timeout={{ enter: 100, exit: 150 }}>
-                        <Fab size="medium" classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>
-                            <DeleteIcon />
-                        </Fab>
-                    </Zoom>
-                </div>
+                            <Fab size="medium" classes={{ root: "add-button-root" }} onClick={addNewTask}>
+                                <AddIcon />
+                            </Fab>
+                        </Zoom>
+                        <Zoom in={dragging} timeout={{ enter: 100, exit: 150 }}>
+                            <Fab size="medium" classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>
+                                <DeleteIcon fontSize="small" />
+                            </Fab>
+                        </Zoom>
+                    </div>
+                </Zoom>
             </Paper>
         </DragDropContext>
     );

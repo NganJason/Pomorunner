@@ -15,6 +15,8 @@ import "./App.modules.css";
 import { getService } from "./services/service.js";
 import { store, persistor } from "./redux/store.js";
 import { GlobalTimer } from "./classes/GlobalTimer.js";
+import Weekview from "../src/components/Weekview/Weekview.js";
+import ViewSetter from "../src/components/ViewSetter/ViewSetter.js";
 
 dotenv.config();
 
@@ -46,16 +48,18 @@ function App() {
                 <ProductionAuth setLoading={setLoading} />
               )}
               <Countdown />
+              <ViewSetter/>
               <Grid container>
                 <Grid item xs={1} sm={2} md={3} lg={4}>
-            </Grid>
-            <Grid item xs={10} sm={8} md={6} lg={4}>
-              <TaskList/>
-            </Grid>
-            <Grid item xs={1} sm={2} md={3} lg={4}>
-              <SubTaskList/>
-            </Grid>
+                </Grid>
+                <Grid item xs={10} sm={8} md={6} lg={4}>
+                  <TaskList />
+                </Grid>
+                <Grid item xs={1} sm={2} md={3} lg={4}>
+                  <SubTaskList />
+                </Grid>
               </Grid>
+              <Weekview/>
             </div>
           </Fade>
         </PersistGate>
