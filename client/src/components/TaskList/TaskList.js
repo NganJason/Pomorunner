@@ -2,50 +2,55 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import "./TaskList.modules.scss"
-import Button from "@material-ui/core/Button";
 import { Draggable, DragDropContext, Droppable } from "react-beautiful-dnd";
-import Fade from "@material-ui/core/Fade";
+import { clockUtils } from "../../utils/clockUtils";
+import Zoom from "@material-ui/core/Zoom";
+import Fab from "@material-ui/core/Fab";
+import AddIcon from '@material-ui/icons/Add';
+import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import Task from "../Task/Task.js";
+import { MouseDown } from "../../classes/MouseEvents.js";
 
 import { initTaskList, getTaskList } from "../../classes/TaskList.js"
 
-export default function TaskList() {
+export default function TaskList(props) {
     const tasks = useSelector((state) => state.tasks);
     const user = useSelector((state) => state.user);
     const [dragging, setDragging] = React.useState(false);
+    const [mouseInList, setMouseInList] = React.useState(false);
     const toDelete = React.useRef(false);
+    const { side } = props;
 
-    React.useEffect(() => { 
-        if(user._id) {
-          initTaskList(user._id);
+    React.useEffect(() => {
+        if (user._id) {
+            initTaskList(user._id);
         }
     }, [user]);
 
     async function addNewTask() {
-      //Scroll to end of task list
-      setTimeout(() => {
-        const elem = document.getElementById("task-list-paper");
-        elem.scrollTop = elem.scrollHeight;
-      }, 0);
+        //Scroll to end of task list
+        setTimeout(() => {
+            const elem = document.getElementById("task-list-paper");
+            elem.scrollTop = elem.scrollHeight;
 
-      getTaskList().addTask();
+            //Focus last item
+            const elems = document.getElementsByClassName("task-input-outlined-root");
+            elems[elems.length - 1].firstChild.focus();
+        }, 0);
+
+        getTaskList().addTask();
     }
 
     const dragEndHandler = (result) => {
-        if (!result.destination || result.destination.index === result.source.index || !result) {
-            console.log("Invalid", result, toDelete.current);
-            // if (result.source.index !== undefined && toDelete.current) {
-            //     //Delete content
-            //     setContents((prevContents) => {
-            //         const newContents = ObjArrayCopy(prevContents);
-            //         newContents.splice(result.source.index, 1);
+        if (toDelete.current) {
+            getTaskList().deleteTask(result.source.index)
+            toDelete.current = false;
+        }
 
-            //         return newContents;
-            //     });
-            // }
+        if (!result.destination || result.destination.index === result.source.index || !result) {
             setDragging(false);
             return;
         }
@@ -55,7 +60,7 @@ export default function TaskList() {
         //Delay setting dragging to false to allow drop animation to complete
         setTimeout(() => {
             setDragging(false);
-        }, 100);
+        }, 0);
     };
 
     function dragStartHandler(e) {
@@ -63,21 +68,39 @@ export default function TaskList() {
         setDragging(true);
         document.activeElement.blur();
     }
-    
+
     function deleteEnter() {
-        toDelete.current = true;
-        console.log("Entered");
+        if (dragging && MouseDown)
+            toDelete.current = true;
     }
 
     function deleteLeave() {
-        toDelete.current = false;
-        console.log("Leaved");
+        if (dragging && MouseDown)
+            toDelete.current = false;
+    }
+
+    function onTaskListEnter() {
+        setMouseInList(true);
+    }
+
+    function onTaskListLeave() {
+        setMouseInList(false);
     }
 
     return (
         <DragDropContext onDragEnd={dragEndHandler} onDragStart={dragStartHandler}>
-            <Paper className={"main-paper"} classes={{ root: "main-paper-root" }} elevation={0}>
-                <Typography variant="h6">TaskList</Typography>
+            <Paper
+                className={"main-paper"}
+                classes={{ root: `main-paper-root ${side !== undefined ? side + "-task-list" : ""}` }}
+                elevation={0}
+                onMouseEnter={onTaskListEnter}
+                onMouseLeave={onTaskListLeave}
+            >
+                <div className={"day-date-div"}>
+                    <Typography variant="h5">Monday</Typography>
+                    <Typography variant="p">{clockUtils.getDateMonthYear()}</Typography>
+                    <br />
+                </div>
                 <Droppable droppableId="task-list">
                     {(provided) => {
                         return (
@@ -103,14 +126,21 @@ export default function TaskList() {
                         )
                     }}
                 </Droppable>
-                <div className={"add-button"}>
-                    <Fade in={!dragging} timeout={{ exit: 100 }}>
-                        <Button variant="contained" disableElevation={false} classes={{ root: "add-button-root" }} onClick={addNewTask}>Add task</Button>
-                    </Fade>
-                    <Fade in={dragging} timeout={{ exit: 100 }}>
-                        <Button variant="contained" disableElevation={false} classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>Delete</Button>
-                    </Fade>
-                </div>
+                <Zoom in={mouseInList}>
+                    <div className={"add-button"}>
+                        <Zoom in={!dragging} timeout={{ enter: 100, exit: 150 }}>
+
+                            <Fab size="medium" classes={{ root: "add-button-root" }} onClick={addNewTask}>
+                                <AddIcon />
+                            </Fab>
+                        </Zoom>
+                        <Zoom in={dragging} timeout={{ enter: 100, exit: 150 }}>
+                            <Fab size="medium" classes={{ root: "delete-button-root" }} onMouseEnter={deleteEnter} onMouseLeave={deleteLeave}>
+                                <DeleteIcon fontSize="small" />
+                            </Fab>
+                        </Zoom>
+                    </div>
+                </Zoom>
             </Paper>
         </DragDropContext>
     );

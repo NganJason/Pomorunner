@@ -8,6 +8,7 @@ import Fade from "@material-ui/core/Fade";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import PlayPauseButton from "./PlayPauseButton/PlayPauseButton";
+import TaskContext from "./TaskContext/TaskContext";
 import TextField from "@material-ui/core/TextField";
 
 import "./Task.modules.scss";
@@ -31,37 +32,9 @@ export default function Task(props) {
     function onContextMenu(e) {
         e.preventDefault();
         document.activeElement.blur();
-        // if (subtasksVisible)
-        //     return;
 
         setOptionsVisible(prevState => !prevState);
         setHandleVisible(false);
-    }
-
-    function onOptionsButtonClick(e) {
-        switch (e.currentTarget.id) {
-            case "task-delete":
-                getTaskList().deleteTask(index)
-                setOptionsVisible(false);
-                break;
-
-            case "task-cancel":
-                setOptionsVisible(false);
-                break;
-
-            case "task-subtasks":
-                getTaskList().setSubtasksVisibility(index, true);
-                setOptionsVisible(false);
-                break;
-
-            case "task-reset":
-                getTaskList().resetTask(index);
-                setOptionsVisible(false);
-                break;
-
-            default:
-                break;
-        }
     }
 
     React.useEffect(() => {
@@ -79,7 +52,11 @@ export default function Task(props) {
         setTemporaryTask({ content: e.target.value, lastEdit: new Date().getTime() });
     }, []);
 
-    const onMouseEnter = React.useCallback(() => {
+    const onMouseOver = React.useCallback((e) => {
+        //Ignore if mouse over target is "div" and "div.MuiPopover-root". Otherwise this callback is triggered when right click context is dismissed
+        if(e.target.className === "" || e.target.className === "MuiPopover-root")
+            return;
+
         if (optionsVisible && handleVisible)
             setHandleVisible(false);
 
@@ -118,77 +95,60 @@ export default function Task(props) {
                 className={`task-paper ${subtasksVisible ? "selected-task-paper" : "null"}`}
                 elevation={0}
                 onContextMenu={onContextMenu}
-                onMouseOver={onMouseEnter}
+                onMouseOver={onMouseOver}
                 onMouseLeave={onMouseLeave}
             >
-                <Fade in={!optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
-                        <Grid item xs={1} className={"task-item"}>
-                            <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
-                        </Grid>
-                        <Grid item xs={10} className={"text-field-grid-item"}>
-                            <Grid container
-                                direction="column"
-                                justify="space-between"
-                                spacing={1}
-                            >
-                                <Grid item xs={12}>
-                                    <TextField
-                                        classes={{
-                                            root: "text-field-root"
-                                        }}
-                                        InputProps={{
-                                            classes: {
-                                                root: "outlined-root task-input-outlined-root",
-                                                multiline: "outlined-multiline",
-                                                disabled: "text-field-disabled",
-                                                notchedOutline: "text-field-border",
-                                                focused: "text-field-focused"
-                                            }
-                                        }}
-                                        size="small"
-                                        margin="none"
-                                        fullWidth={true}
-                                        multiline={true}
-                                        variant={"outlined"}
-                                        value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
-                                        autoComplete="false"
-                                        autoCapitalize="false"
-                                        onChange={textChange}
-                                        onBlur={textFocusOut}
-                                        onKeyDown={keyDown}
-                                        onKeyUp={keyUp}
-                                        placeholder="Enter new task"
-                                    />
+                <Grid container spacing={0} className={"task-container"} alignItems={"center"} justify="flex-start" id={task}>
+                    <Grid item xs={1} className={"task-item"}>
+                        <Checkbox color="default" checked={checked} onChange={onCheckboxChange}></Checkbox>
+                    </Grid>
+                    <Grid item xs={10} className={"text-field-grid-item"}>
+                        <Grid container
+                            direction="column"
+                            justify="space-between"
+                            spacing={1}
+                        >
+                            <Grid item xs={12}>
+                                <TextField
+                                    classes={{
+                                        root: "text-field-root"
+                                    }}
+                                    InputProps={{
+                                        classes: {
+                                            root: "outlined-root task-input-outlined-root",
+                                            multiline: "outlined-multiline",
+                                            disabled: "text-field-disabled",
+                                            notchedOutline: "text-field-border",
+                                            focused: "text-field-focused"
+                                        }
+                                    }}
+                                    size="small"
+                                    margin="none"
+                                    fullWidth={true}
+                                    multiline={true}
+                                    variant={"outlined"}
+                                    value={temporaryTask.lastEdit > task.lastEdit ? temporaryTask.content : task.content}
+                                    autoComplete="false"
+                                    autoCapitalize="false"
+                                    onChange={textChange}
+                                    onBlur={textFocusOut}
+                                    onKeyDown={keyDown}
+                                    onKeyUp={keyUp}
+                                    placeholder="Enter new task"
+                                />
 
-                                </Grid>
                             </Grid>
                         </Grid>
-                        <Grid item xs={1}>
-                            <PlayPauseButton
-                                task={task}
-                                index={index}
-                                dragging={dragging}
-                            />
-                        </Grid>
                     </Grid>
-                </Fade>
-                <Fade in={optionsVisible} timeout={{ exit: fadeExit }}>
-                    <Grid container className={"options-div"} wrap="nowrap" alignContent="center" alignItems="center">
-                        <Grid item>
-                            <Button id="task-reset" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Reset</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-subtasks" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Subtasks</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-delete" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Delete</Button>
-                        </Grid>
-                        <Grid item>
-                            <Button id="task-cancel" className={"option-buttons"} variant="outlined" onClick={onOptionsButtonClick}>Cancel</Button>
-                        </Grid>
+                    <Grid item xs={1}>
+                        <PlayPauseButton
+                            task={task}
+                            index={index}
+                            dragging={dragging}
+                        />
                     </Grid>
-                </Fade>
+                </Grid>
+                <TaskContext optionsVisible={optionsVisible} setOptionsVisible={setOptionsVisible} index={index}/>
                 <div className="drag-handle-div">
                     <Fade in={handleVisible}>
                         <DragHandleIcon

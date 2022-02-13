@@ -14,7 +14,19 @@ const getTwelveHrTime = () => {
   return twentyFourHrTime;
 };
 
+const getDateMonth = () => {
+  let date = new Date();
+  return date.toLocaleString("default", {day: "numeric", month: "short"});
+}
+
+const getDateMonthYear = () => {
+  let date = new Date();
+  return date.toLocaleString("default", {day: "numeric", month: "short", year: "numeric"});
+}
+
 export const clockUtils = {
     getTwentyFourHrTime: getTwentyFourHrTime,
-    getTwelveHrTime: getTwelveHrTime
+    getTwelveHrTime: getTwelveHrTime,
+    getDateMonth: getDateMonth,
+    getDateMonthYear: getDateMonthYear
 }

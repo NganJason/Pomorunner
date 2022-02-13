@@ -3,7 +3,7 @@ export class BaseTask {
         this._id = dbTask._id
         this.order = dbTask.order
         this.content = dbTask.content || ""
-        this.pomodoro_duration = dbTask.pomodoro_duration || 45
+        this.pomodoro_duration = dbTask.pomodoro_duration || 120
         this.pomodoro_progress = dbTask.pomodoro_progress || 0
         this.checked = dbTask.checked || false
         this.running = dbTask.running || false;

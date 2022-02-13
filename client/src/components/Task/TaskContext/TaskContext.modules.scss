@@ -1,0 +1,8 @@
+.context-buttons-div{
+	display: flex;
+    flex-direction: column;
+}
+
+#task-reset,#task-subtasks,#task-delete,#task-cancel{
+    border-radius: 0 !important;
+}

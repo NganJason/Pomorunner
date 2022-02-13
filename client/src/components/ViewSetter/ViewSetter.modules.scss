@@ -1,0 +1,41 @@
+.view-setter-div{
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin: auto 10rem;
+}
+
+.view-setter-button-div{
+  width: fit-content;
+}
+
+.popover{
+  margin-top: 0.05rem;
+}
+
+.popover-div{
+  display: flex;
+  flex-direction: column;
+  width: 6.5rem;
+}
+
+.view-setter-button{
+  width: 6.5rem;
+}
+
+span.view-setter-button-label{
+  width: 100%;
+  display: block;
+  padding: 0.3rem 0.5rem;
+}
+
+button.view-setter-button-root{
+  padding: 0;
+}
+
+.view-setter-button-content-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
